@@ -123,7 +123,6 @@
         }
 
         .lap-list {
-            max-height: 200px;
             overflow-y: auto;
         }
 
@@ -210,7 +209,7 @@
         </button>
         <button class="tab-btn" data-tab="worldclock">
             <span class="material-symbols-rounded">public</span>
-            World Clock
+            Worlds
         </button>
         <button class="tab-btn" data-tab="bedtime">
             <span class="material-symbols-rounded">bedtime</span>
@@ -281,32 +280,98 @@
         });
 
         // Alarm Functionality
-        let alarms = [];
+let alarms = [];
+let originalTitle = document.title;
+      
+document.getElementById('addAlarm').addEventListener('click', () => {
+    const time = document.getElementById('alarmTime').value;
+    if (time) {
+        alarms.push({ time, id: Date.now() });
+        renderAlarms();
+        checkAlarms(); // Start checking this alarm immediately
+    }
+});
         
-        document.getElementById('addAlarm').addEventListener('click', () => {
-            const time = document.getElementById('alarmTime').value;
-            if (time) {
-                alarms.push({ time, id: Date.now() });
-                renderAlarms();
-            }
-        });
+// Create audio element
+const alarmSound = new Audio('https://www.gstatic.com/delight/funbox/timer_utilitarian_v2.mp3');
+alarmSound.loop = true;
 
-        function renderAlarms() {
-            const alarmList = document.getElementById('alarmList');
-            alarmList.innerHTML = alarms.map(alarm => `
-                <div class="alarm-item">
-                    <span>${alarm.time}</span>
-                    <button class="action-btn" onclick="deleteAlarm(${alarm.id})">
-                        <span class="material-symbols-rounded">delete</span>
-                    </button>
-                </div>
-            `).join('');
-        }
+if ("Notification" in window) {
+   Notification.requestPermission();
+}
+        
+function checkAlarms() {
+    const now = new Date();
+    const currentTime = now.toLocaleTimeString('en-US', { 
+        hour12: false, 
+        hour: '2-digit', 
+        minute: '2-digit'
+    });
 
-        function deleteAlarm(id) {
-            alarms = alarms.filter(alarm => alarm.id !== id);
-            renderAlarms();
+    alarms.forEach(alarm => {
+        if (alarm.time === currentTime) {
+            triggerAlarm(alarm.time);
+            deleteAlarm(alarm.id); // Remove the triggered alarm
         }
+    });
+}
+
+function triggerAlarm(alarmTime) {
+   // Play sound
+   alarmSound.play();
+
+   setTimeout(stopAlarm, 60000);
+    
+   // Change title
+   document.title = "⏰ Alarm";
+   
+   // Show browser modal
+   alert(`⏰ Alarm • ${alarmTime}`);
+   stopAlarm();
+   
+   // Send notification
+   if (Notification.permission === "granted") {
+       new Notification("⏰ Alarm", {
+           body: alarmTime,
+           icon: "/favicon.png" // Add your icon path
+       });
+   }
+}
+
+function stopAlarm() {
+    // Stop sound
+    alarmSound.pause();
+    alarmSound.currentTime = 0;
+    
+    // Restore original title
+    document.title = originalTitle;
+    
+    // Remove modal
+    const modal = document.querySelector('div[style*="position: fixed"]');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+// Check alarms every second
+setInterval(checkAlarms, 1000);
+
+function renderAlarms() {
+    const alarmList = document.getElementById('alarmList');
+    alarmList.innerHTML = alarms.map(alarm => `
+        <div class="alarm-item">
+            <span>${alarm.time}</span>
+            <button class="action-btn" onclick="deleteAlarm(${alarm.id})">
+                <span class="material-symbols-rounded">delete</span>
+            </button>
+        </div>
+    `).join('');
+}
+
+function deleteAlarm(id) {
+    alarms = alarms.filter(alarm => alarm.id !== id);
+    renderAlarms();
+}
 
         // Stopwatch Functionality
         let stopwatchTime = 0;
@@ -409,11 +474,11 @@
 
         // Bedtime Tips
         const bedtimeTips = [
-            "Maintain a consistent sleep schedule",
-            "Avoid screens 1 hour before bed",
-            "Keep your bedroom cool and dark",
-            "Practice relaxation techniques",
-            "Avoid caffeine in the evening"
+            "Maintain a consistent sleep schedule.",
+            "Avoid screens 1 hour before bed.",
+            "Keep your bedroom cool and dark.",
+            "Practice relaxation techniques.",
+            "Avoid caffeine in the evening."
         ];
 
         function renderBedtimeTips() {
