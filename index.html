@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronos</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,700,1,0" />
+    <script src="https://momentjs.com/downloads/moment.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment-timezone-with-data.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #1c1c1c;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            color: white;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px 20px;
+            background-color: transparent;
+            border: 2px solid #666666;
+            border-radius: 25px;
+        }
+
+        .tab-btn {
+            background-color: #666666;
+            color: #f9f9f9;
+            border: none;
+            border-radius: 50px;
+            padding: 8px 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover, .tab-btn.active {
+            background-color: #bdd6ff;
+            color: #1c1c1c;
+        }
+
+.toolbar .tab-btn .material-symbols-rounded {
+    color: #f9f9f9 !important;  /* Force default color */
+    transition: color 0.2s;
+}
+
+.toolbar .tab-btn.active .material-symbols-rounded {
+    color: #1c1c1c !important;  /* Force color on active */
+}
+      
+        .content {
+            background-color: transparent;
+            border: 2px solid #666666;
+            border-radius: 25px;
+            padding: 20px;
+            min-height: 400px;
+        }
+
+        /* Alarm Section */
+        .alarm-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+.time-picker, .timezone-select {
+    background-color: #666666;
+    border: none;
+    border-radius: 25px;
+    color: #f9f9f9;
+    padding: 8px 15px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+        .alarm-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .alarm-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        /* Stopwatch Section */
+        .stopwatch-display {
+            font-size: 48px;
+            text-align: center;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+
+        .stopwatch-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .lap-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .lap-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #666666;
+        }
+
+        /* World Clock Section */
+        .clock-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .clock-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .clock-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        /* Bedtime Tips Section */
+        .tips-container {
+            padding: 20px;
+        }
+
+        .tip-item {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;  /* Ensure left alignment */
+        }
+
+        .material-symbols-rounded {
+            font-size: 24px;
+            color: #f9f9f9
+        }
+
+        .action-btn {
+            background-color: #666666;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 8px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 40px;
+        }
+
+        .action-btn:hover {
+            background-color: #bdd6ff;
+            color: #1c1c1c;
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <button class="tab-btn active" data-tab="alarm">
+            <span class="material-symbols-rounded">alarm</span>
+            Alarm
+        </button>
+        <button class="tab-btn" data-tab="stopwatch">
+            <span class="material-symbols-rounded">timer</span>
+            Stopwatch
+        </button>
+        <button class="tab-btn" data-tab="worldclock">
+            <span class="material-symbols-rounded">public</span>
+            World Clock
+        </button>
+        <button class="tab-btn" data-tab="bedtime">
+            <span class="material-symbols-rounded">bedtime</span>
+            Bedtime
+        </button>
+    </div>
+
+    <div class="content">
+        <!-- Alarm Section -->
+        <div id="alarm" class="section">
+            <div class="alarm-controls">
+                <input type="time" class="time-picker" id="alarmTime">
+                <button class="action-btn" id="addAlarm">
+                    <span class="material-symbols-rounded">add</span>
+                    Add Alarm
+                </button>
+            </div>
+            <div class="alarm-list" id="alarmList"></div>
+        </div>
+
+        <!-- Stopwatch Section -->
+        <div id="stopwatch" class="section" style="display: none;">
+            <div class="stopwatch-display" id="stopwatchDisplay">00:00:00.000</div>
+            <div class="stopwatch-controls">
+                <button class="action-btn" id="startStopwatch">
+                    <span class="material-symbols-rounded">play_arrow</span>
+                    Start
+                </button>
+                <button class="action-btn" id="lapStopwatch">
+                    <span class="material-symbols-rounded">flag</span>
+                    Lap
+                </button>
+                <button class="action-btn" id="resetStopwatch">
+                    <span class="material-symbols-rounded">restart_alt</span>
+                    Reset
+                </button>
+            </div>
+            <div class="lap-list" id="lapList"></div>
+        </div>
+
+        <!-- World Clock Section -->
+        <div id="worldclock" class="section" style="display: none;">
+            <div class="clock-controls">
+                <select class="timezone-select" id="timezoneSelect"></select>
+                <button class="action-btn" id="addClock">
+                    <span class="material-symbols-rounded">add</span>
+                    Add Clock
+                </button>
+            </div>
+            <div class="clock-list" id="clockList"></div>
+        </div>
+
+        <!-- Bedtime Tips Section -->
+        <div id="bedtime" class="section" style="display: none;">
+            <div class="tips-container" id="tipsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Switching
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
+                document.getElementById(button.dataset.tab).style.display = 'block';
+            });
+        });
+
+        // Alarm Functionality
+        let alarms = [];
+        
+        document.getElementById('addAlarm').addEventListener('click', () => {
+            const time = document.getElementById('alarmTime').value;
+            if (time) {
+                alarms.push({ time, id: Date.now() });
+                renderAlarms();
+            }
+        });
+
+        function renderAlarms() {
+            const alarmList = document.getElementById('alarmList');
+            alarmList.innerHTML = alarms.map(alarm => `
+                <div class="alarm-item">
+                    <span>${alarm.time}</span>
+                    <button class="action-btn" onclick="deleteAlarm(${alarm.id})">
+                        <span class="material-symbols-rounded">delete</span>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function deleteAlarm(id) {
+            alarms = alarms.filter(alarm => alarm.id !== id);
+            renderAlarms();
+        }
+
+        // Stopwatch Functionality
+        let stopwatchTime = 0;
+        let stopwatchInterval;
+        let laps = [];
+        let isRunning = false;
+
+        document.getElementById('startStopwatch').addEventListener('click', function() {
+            if (!isRunning) {
+                this.innerHTML = '<span class="material-symbols-rounded">pause</span>Stop';
+                stopwatchInterval = setInterval(updateStopwatch, 10);
+            } else {
+                this.innerHTML = '<span class="material-symbols-rounded">play_arrow</span>Start';
+                clearInterval(stopwatchInterval);
+            }
+            isRunning = !isRunning;
+        });
+
+        function updateStopwatch() {
+            stopwatchTime += 10;
+            const display = document.getElementById('stopwatchDisplay');
+            display.textContent = formatTime(stopwatchTime);
+        }
+
+        function formatTime(ms) {
+            const date = new Date(ms);
+            return date.toISOString().substr(11, 12);
+        }
+
+        document.getElementById('lapStopwatch').addEventListener('click', () => {
+            if (isRunning) {
+                laps.push(stopwatchTime);
+                renderLaps();
+            }
+        });
+
+        function renderLaps() {
+            const lapList = document.getElementById('lapList');
+            lapList.innerHTML = laps.map((lap, index) => `
+                <div class="lap-item">
+                    <span>Lap ${index + 1}</span>
+                    <span>${formatTime(lap)}</span>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('resetStopwatch').addEventListener('click', () => {
+            clearInterval(stopwatchInterval);
+            stopwatchTime = 0;
+            laps = [];
+            isRunning = false;
+            document.getElementById('stopwatchDisplay').textContent = '00:00:00.000';
+            document.getElementById('startStopwatch').innerHTML = '<span class="material-symbols-rounded">play_arrow</span>Start';
+            renderLaps();
+        });
+
+        // World Clock Functionality
+        let worldClocks = [];
+
+        // Populate timezone select
+        const timezones = moment.tz.names();
+        const timezoneSelect = document.getElementById('timezoneSelect');
+        timezones.forEach(timezone => {
+            const option = document.createElement('option');
+            option.value = timezone;
+            option.textContent = timezone;
+            timezoneSelect.appendChild(option);
+        });
+
+        document.getElementById('addClock').addEventListener('click', () => {
+            const timezone = timezoneSelect.value;
+            if (timezone && !worldClocks.find(clock => clock.timezone === timezone)) {
+                worldClocks.push({ timezone, id: Date.now() });
+                renderWorldClocks();
+            }
+        });
+
+        function renderWorldClocks() {
+            const clockList = document.getElementById('clockList');
+            clockList.innerHTML = worldClocks.map(clock => `
+                <div class="clock-item">
+                    <div>
+                        <div>${clock.timezone}</div>
+                        <div>${moment().tz(clock.timezone).format('HH:mm:ss')}</div>
+                    </div>
+                    <button class="action-btn" onclick="deleteClock(${clock.id})">
+                        <span class="material-symbols-rounded">delete</span>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function deleteClock(id) {
+            worldClocks = worldClocks.filter(clock => clock.id !== id);
+            renderWorldClocks();
+        }
+
+        // Update world clocks every second
+        setInterval(renderWorldClocks, 1000);
+
+        // Bedtime Tips
+        const bedtimeTips = [
+            "Maintain a consistent sleep schedule",
+            "Avoid screens 1 hour before bed",
+            "Keep your bedroom cool and dark",
+            "Practice relaxation techniques",
+            "Avoid caffeine in the evening"
+        ];
+
+        function renderBedtimeTips() {
+            const tipsContainer = document.getElementById('tipsContainer');
+            tipsContainer.innerHTML = bedtimeTips.map(tip => `
+                <div class="tip-item">
+                    <span class="material-symbols-rounded">tips_and_updates</span>
+                    ${tip}
+                </div>
+            `).join('');
+        }
+
+        renderBedtimeTips();
+    </script>
+</body>
+</html>
