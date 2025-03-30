@@ -574,7 +574,6 @@ function deleteAlarm(id) {
         document.getElementById('resetStopwatch').addEventListener('click', resetStopwatch);
 
         // World Clock Functionality
-        let worldClocks = [];
         let worldClocks = JSON.parse(localStorage.getItem('worldClocks')) || [];
 
         function saveWorldClocks() {
