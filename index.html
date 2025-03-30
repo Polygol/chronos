@@ -576,6 +576,29 @@ function deleteAlarm(id) {
             `).join('');
         }
 
+        // Theme synchronization for app side
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial theme application based on localStorage
+            const storedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.classList.toggle('light-theme', storedTheme === 'light');
+            
+            // Set up listener for theme change messages
+            window.addEventListener('message', (event) => {
+                // Verify message origin and type for security
+                if (event.origin === window.location.origin && event.data.type === 'themeUpdate') {
+                    const newTheme = event.data.theme;
+                    document.body.classList.toggle('light-theme', newTheme === 'light');
+                    console.log('App theme updated via message to:', newTheme);
+                }
+            });
+            
+            // Optional: Set up polling fallback to ensure themes stay in sync
+            setInterval(() => {
+                const currentTheme = localStorage.getItem('theme') || 'dark';
+                document.body.classList.toggle('light-theme', currentTheme === 'light');
+            }, 5000);
+        });
+
         renderBedtimeTips();
     </script>
 </body>
