@@ -414,6 +414,7 @@
         // Alarm Functionality
 let originalTitle = document.title;
 let alarms = JSON.parse(localStorage.getItem('alarms')) || [];
+const alarmSound = new Audio('/assets/sound/timer.mp3');
 
 function saveAlarms() {
     localStorage.setItem('alarms', JSON.stringify(alarms));
@@ -521,9 +522,6 @@ const resetBtn = document.getElementById('resetBtn');
 const progressRing = document.querySelector('.progress-ring');
 const progressCircle = document.querySelector('.progress-ring circle.progress');
 const timerContainer = document.querySelector('.timer-container');
-
-// Load the MP3 sound for the alarm
-const alarmSound = new Audio('/assets/sound/timer.mp3');
 
 const radius = progressCircle.r.baseVal.value;
 const circumference = radius * 2 * Math.PI;
