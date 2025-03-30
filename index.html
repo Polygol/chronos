@@ -487,93 +487,59 @@ function deleteAlarm(id) {
 }
 
         // Stopwatch Functionality
-        let stopwatchStartTime = 0;
-        let stopwatchElapsedTime = 0;
-        let stopwatchRunning = false;
-        let stopwatchRequestFrame;
+        let stopwatchTime = 0;
+        let stopwatchInterval;
         let laps = [];
-        
-        function startStopwatch() {
-            if (!stopwatchRunning) {
-                stopwatchStartTime = Date.now() - stopwatchElapsedTime;
-                stopwatchRunning = true;
-                requestAnimationFrame(updateStopwatch);
+        let isRunning = false;
+
+        document.getElementById('startStopwatch').addEventListener('click', function() {
+            if (!isRunning) {
+                this.innerHTML = '<span class="material-symbols-rounded">pause</span>Stop';
+                stopwatchInterval = setInterval(updateStopwatch, 10);
+            } else {
+                this.innerHTML = '<span class="material-symbols-rounded">play_arrow</span>Start';
+                clearInterval(stopwatchInterval);
             }
-        }
-        
-        function stopStopwatch() {
-            if (stopwatchRunning) {
-                stopwatchElapsedTime = Date.now() - stopwatchStartTime;
-                stopwatchRunning = false;
-                cancelAnimationFrame(stopwatchRequestFrame);
-            }
-        }
-        
-        function resetStopwatch() {
-            stopwatchRunning = false;
-            stopwatchElapsedTime = 0;
-            laps = [];
-            cancelAnimationFrame(stopwatchRequestFrame);
-            document.getElementById('stopwatchDisplay').textContent = '00:00:00.000';
-            renderLaps(); // Ensure lap list clears when resetting
-        }
-        
+            isRunning = !isRunning;
+        });
+
         function updateStopwatch() {
-            if (!stopwatchRunning) return;
-        
-            const elapsed = Date.now() - stopwatchStartTime;
-            document.getElementById('stopwatchDisplay').textContent = formatTime(elapsed);
-            stopwatchRequestFrame = requestAnimationFrame(updateStopwatch);
+            stopwatchTime += 10;
+            const display = document.getElementById('stopwatchDisplay');
+            display.textContent = formatTime(stopwatchTime);
         }
-        
+
         function formatTime(ms) {
-            let totalSeconds = Math.floor(ms / 1000);
-            let milliseconds = ms % 1000;
-            let minutes = Math.floor(totalSeconds / 60);
-            let seconds = totalSeconds % 60;
-            
-            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(milliseconds).padStart(3, '0')}`;
+            const date = new Date(ms);
+            return date.toISOString().substr(11, 12);
         }
-        
-        // Lap Handling
+
         document.getElementById('lapStopwatch').addEventListener('click', () => {
-            if (stopwatchRunning) {
-                laps.push(stopwatchElapsedTime);
+            if (isRunning) {
+                laps.push(stopwatchTime);
                 renderLaps();
             }
         });
-        
+
         function renderLaps() {
             const lapList = document.getElementById('lapList');
-            if (laps.length > 0) {
-                lapList.innerHTML = `
-                    <div class="stopwatch-header">
-                        <span id="stopwatchDisplay">${formatTime(stopwatchElapsedTime)}</span>
-                    </div>
-                    ${laps.map((lap, index) => `
-                        <div class="lap-item">
-                            <span>Lap ${index + 1}</span>
-                            <span>${formatTime(lap)}</span>
-                        </div>
-                    `).join('')}
-                `;
-            } else {
-                lapList.innerHTML = "";
-            }
+            lapList.innerHTML = laps.map((lap, index) => `
+                <div class="lap-item">
+                    <span>Lap ${index + 1}</span>
+                    <span>${formatTime(lap)}</span>
+                </div>
+            `).join('');
         }
-        
-        // Button Event Listeners
-        document.getElementById('startStopwatch').addEventListener('click', function() {
-            if (stopwatchRunning) {
-                stopStopwatch();
-                this.innerHTML = '<span class="material-symbols-rounded">play_arrow</span>Start';
-            } else {
-                startStopwatch();
-                this.innerHTML = '<span class="material-symbols-rounded">pause</span>Stop';
-            }
+
+        document.getElementById('resetStopwatch').addEventListener('click', () => {
+            clearInterval(stopwatchInterval);
+            stopwatchTime = 0;
+            laps = [];
+            isRunning = false;
+            document.getElementById('stopwatchDisplay').textContent = '00:00:00.000';
+            document.getElementById('startStopwatch').innerHTML = '<span class="material-symbols-rounded">play_arrow</span>Start';
+            renderLaps();
         });
-        
-        document.getElementById('resetStopwatch').addEventListener('click', resetStopwatch);
 
         // World Clock Functionality
         let worldClocks = JSON.parse(localStorage.getItem('worldClocks')) || [];
