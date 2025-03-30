@@ -309,6 +309,10 @@
             <span class="material-symbols-rounded">alarm</span>
             Alarm
         </button>
+        <button class="tab-btn" data-tab="timer">
+            <span class="material-symbols-rounded">timer</span>
+            Timer
+        </button>
         <button class="tab-btn" data-tab="stopwatch">
             <span class="material-symbols-rounded">timer</span>
             Stopwatch
@@ -336,9 +340,31 @@
             <div class="alarm-list" id="alarmList"></div>
         </div>
 
+        <div id="timer" class="section" style="display: none;">
+            <div class="timer-circle">
+                <svg class="progress-ring" width="450" height="450">
+                    <circle cx="225" cy="225" r="210" />
+                    <circle class="progress" cx="225" cy="225" r="210" />
+                </svg>
+                <div class="timer-display" id="display">00:00</div>
+                <input type="text" class="timer-input" id="timeInput" maxlength="4" pattern="\d*">
+            </div>
+            <div class="controls">
+                <button class="btn" onclick="addTime(30)">30s</button>
+                <button class="btn" onclick="addTime(60)">1m</button>
+                <button class="btn" onclick="addTime(300)">5m</button>
+                <button class="btn" onclick="addTime(1800)">30m</button>
+                <button class="btn" onclick="addTime(3600)">1h</button>
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn running" id="startBtn" onclick="toggleTimer()"><span class="material-symbols-rounded">play_arrow</span></button>
+                <button class="action-btn running" id="resetBtn" onclick="resetTimer()"><span class="material-symbols-rounded">restart_alt</span></button>
+            </div>
+        </div>
+        
         <!-- Stopwatch Section -->
         <div id="stopwatch" class="section" style="display: none;">
-            <div class="stopwatch-display" id="stopwatchDisplay">00:00:00.000</div>
+            <div class="stopwatch-display" id="stopwatchDisplay">00:00.000</div>
             <div class="stopwatch-controls">
                 <button class="action-btn" id="startStopwatch">
                     <span class="material-symbols-rounded">play_arrow</span>
@@ -485,6 +511,185 @@ function deleteAlarm(id) {
     renderAlarms();
 }
 
+// Timer
+let totalTime = 0;
+let timeLeft = 0;
+let timerId = null;
+const display = document.getElementById('display');
+const timeInput = document.getElementById('timeInput');
+const startBtn = document.getElementById('startBtn');
+const resetBtn = document.getElementById('resetBtn');
+const progressRing = document.querySelector('.progress-ring');
+const progressCircle = document.querySelector('.progress-ring circle.progress');
+const timerContainer = document.querySelector('.timer-container');
+
+// Load the MP3 sound for the alarm
+const alarmSound = new Audio('/assets/sound/timer.mp3');
+
+const radius = progressCircle.r.baseVal.value;
+const circumference = radius * 2 * Math.PI;
+progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+
+function setProgress(percent) {
+    const offset = circumference - (percent / 100 * circumference);
+    progressCircle.style.strokeDashoffset = offset;
+}
+
+function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function updateDisplay() {
+    const percent = totalTime > 0 ? Math.min(100, Math.max(0, (timeLeft / totalTime) * 100)) : 0;
+    display.textContent = formatTime(timeLeft);
+    setProgress(percent);
+    progressRing.classList[timeLeft > 0 ? 'add' : 'remove']('active');
+}
+
+function addTime(seconds) {
+    let wasRunning = !!timerId;
+    if (timerId) {
+        clearInterval(timerId);
+        timerId = null;
+        startBtn.innerHTML = '<span class="material-symbols-rounded">play_arrow</span>';
+    }
+    timeLeft += seconds;
+    if (!wasRunning) totalTime = timeLeft;
+    totalTime = Math.max(totalTime, timeLeft);
+    updateDisplay();
+    updateActionButtons();
+}
+
+const timerWidget = document.getElementById('timer-widget');
+const timerText = document.getElementById('timer-text');
+
+function toggleTimer() {
+    if (timerId) {
+        clearInterval(timerId);
+        timerId = null;
+        startBtn.innerHTML = '<span class="material-symbols-rounded">play_arrow</span>';
+    } else {
+        if (timeLeft > 0) {
+            timerId = setInterval(() => {
+                timeLeft--;
+                updateDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerId);
+                    timerId = null;
+                    startBtn.innerHTML = '<span class="material-symbols-rounded">play_arrow</span>';
+                    timerWidget.style.display = 'none';
+                    playAlarm();
+                }
+            }, 1000);
+            startBtn.innerHTML = '<span class="material-symbols-rounded">pause</span>';
+        }
+    }
+    updateActionButtons();
+}
+
+function updateActionButtons() {
+    const isAlarmPlaying = alarmSound.currentTime > 0 && !alarmSound.paused;
+    if (timeLeft === 0 && isAlarmPlaying) {
+        startBtn.style.display = 'none';
+        resetBtn.style.display = 'block';
+    } else if (timeLeft === 0 && !isAlarmPlaying) {
+        startBtn.style.display = 'none';
+        resetBtn.style.display = 'block';
+    } else if (timeLeft > 0) {
+        startBtn.style.display = 'block';
+        resetBtn.style.display = 'block';
+    } else {
+        startBtn.style.display = 'block';
+        resetBtn.style.display = 'none';
+    }
+}
+
+function resetTimer() {
+    if (timerId) clearInterval(timerId);
+    timerId = null;
+    timeLeft = 0;
+    totalTime = 0;
+    updateDisplay();
+    startBtn.innerHTML = '<span class="material-symbols-rounded">play_arrow</span>';
+    alarmSound.pause();
+    alarmSound.currentTime = 0;
+    updateActionButtons();
+}
+
+function playAlarm() {
+    alarmSound.play();
+    updateActionButtons();
+}
+
+// Timer Input Section
+display.addEventListener('click', () => {
+    timeInput.value = formatTime(timeLeft).replace(':', '');
+    timeInput.style.display = 'block';
+    display.style.display = 'none';
+    timeInput.focus();
+    updateActionButtons();
+});
+
+timeInput.addEventListener('blur', () => {
+    const input = timeInput.value.padStart(4, '0');
+    const minutes = parseInt(input.slice(0, -2), 10);
+    const seconds = parseInt(input.slice(-2), 10);
+    if (!isNaN(minutes) && !isNaN(seconds)) {
+        timeLeft = minutes * 60 + seconds;
+        totalTime = timeLeft;
+    }
+    updateDisplay();
+    updateActionButtons();
+    timeInput.style.display = 'none';
+    display.style.display = 'block';
+});
+
+timeInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') timeInput.blur();
+});
+
+updateActionButtons();
+
+// Timer Section in Chronos App Toolbar
+const timerTabBtn = document.createElement('button');
+timerTabBtn.classList.add('tab-btn');
+timerTabBtn.setAttribute('data-tab', 'timer');
+timerTabBtn.innerHTML = `
+    <span class="material-symbols-rounded">timer</span>
+    Timer
+`;
+
+document.querySelector('.toolbar').appendChild(timerTabBtn);
+
+const timerSection = document.createElement('div');
+timerSection.classList.add('section');
+timerSection.id = 'timer';
+timerSection.innerHTML = `
+    <div class="timer-circle">
+        <svg class="progress-ring" width="450" height="450">
+            <circle cx="225" cy="225" r="210" />
+            <circle class="progress" cx="225" cy="225" r="210" />
+        </svg>
+        <div class="timer-display" id="display">00:00</div>
+        <input type="text" class="timer-input" id="timeInput" maxlength="4" pattern="\d*">
+    </div>
+    <div class="controls">
+        <button class="btn" onclick="addTime(30)">30s</button>
+        <button class="btn" onclick="addTime(60)">1m</button>
+        <button class="btn" onclick="addTime(300)">5m</button>
+        <button class="btn" onclick="addTime(1800)">30m</button>
+        <button class="btn" onclick="addTime(3600)">1h</button>
+    </div>
+    <div class="action-buttons">
+        <button class="action-btn running" id="startBtn" onclick="toggleTimer()"><span class="material-symbols-rounded">play_arrow</span></button>
+        <button class="action-btn running" id="resetBtn" onclick="resetTimer()"><span class="material-symbols-rounded">restart_alt</span></button>
+    </div>
+`;
+
+document.querySelector('.content').appendChild(timerSection);
+
         // Stopwatch Functionality
         let stopwatchStartTime = 0;
         let stopwatchElapsedTime = 0;
@@ -572,7 +777,18 @@ function deleteAlarm(id) {
             }
         });
         
-        document.getElementById('resetStopwatch').addEventListener('click', resetStopwatch);
+        document.getElementById('resetStopwatch').addEventListener('click', () => {
+            clearInterval(stopwatchInterval);
+            stopwatchTime = 0;
+            laps = [];
+            isRunning = false;
+            
+            document.getElementById('stopwatchDisplay').textContent = '00:00:00.000';
+            document.getElementById('startStopwatch').innerHTML = 
+                '<span class="material-symbols-rounded">play_arrow</span>Start';
+            
+            renderLaps();
+        });
 
         // World Clock Functionality
         let worldClocks = JSON.parse(localStorage.getItem('worldClocks')) || [];
