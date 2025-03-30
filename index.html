@@ -10,36 +10,81 @@
     <script src="https://momentjs.com/downloads/moment.min.js"></script>
     <script src="https://momentjs.com/downloads/moment-timezone-with-data.min.js"></script>
     <style>
+        :root {
+            /* Dark Theme (Default) Variables */
+            --background-color-dark: #1c1c1c;
+            --text-color-dark: #f9f9f9;
+            --secondary-text-color-dark: rgba(255, 255, 255, 0.7);
+            --modal-background-dark: rgba(51, 51, 51, 0.8);
+            --modal-transparent-dark: rgba(51, 51, 51, 0.7);
+            --search-background-dark: rgba(51, 51, 51, 0.5);
+            --dark-overlay: rgba(51, 51, 51, 0.2);
+            --dark-transparent: rgba(255, 255, 255, 0.1); 
+            
+            /* Light Theme Variables */
+            --background-color-light: #f0f0f0;
+            --text-color-light: #333333;
+            --secondary-text-color-light: rgba(0, 0, 0, 0.7);
+            --modal-background-light: rgba(220, 220, 220, 0.8);
+            --modal-transparent-light: rgba(240, 240, 240, 0.7);
+            --search-background-light: rgba(220, 220, 220, 0.5);
+            --light-overlay: rgba(220, 220, 220, 0.2);
+            --light-transparent: rgba(255, 255, 255, 0.1);
+            
+            /* Default to Dark Theme */
+            --background-color: var(--background-color-dark);
+            --text-color: var(--text-color-dark);
+            --secondary-text-color: var(--secondary-text-color-dark);
+            --modal-background: var(--modal-background-dark);
+            --modal-transparent: var(--modal-transparent-dark);
+            --search-background: var(--search-background-dark);
+            --overlay-color: var(--dark-overlay);
+            --transparent-color: var(--dark-transparent);
+        }
+        
+        body.light-theme {
+            --background-color: var(--background-color-light);
+            --text-color: var(--text-color-light);
+            --secondary-text-color: var(--secondary-text-color-light);
+            --modal-background: var(--modal-background-light);
+            --modal-transparent: var(--modal-transparent-light);
+            --search-background: var(--search-background-light);
+            --overlay-color: var(--light-overlay);
+            --transparent-color: var(--light-transparent);
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
-
+        
         body {
-            background-color: #1c1c1c;
+            background-color: var(--background-color);
             min-height: 100vh;
             padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 20px;
-            color: white;
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
         }
-
+        
         .toolbar {
             display: flex;
             justify-content: center;
             gap: 10px;
             padding: 15px 20px;
             background-color: transparent;
-            border: 2px solid #666666;
+            border: 2px solid var(--modal-transparent);
             border-radius: 25px;
         }
-
+        
         .tab-btn {
-            background-color: #666666;
-            color: #f9f9f9;
+            background-color: var(--search-background);
+            color: var(--text-color);
             border: none;
             border-radius: 50px;
             padding: 8px 20px;
@@ -48,30 +93,31 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            backdrop-filter: blur(10px);
         }
-
+        
         .tab-btn:hover, .tab-btn.active {
-            background-color: #bdd6ff;
-            color: #1c1c1c;
+            background-color: var(--text-color);
+            color: var(--background-color);
         }
-
-.toolbar .tab-btn .material-symbols-rounded {
-    color: #f9f9f9 !important;  /* Force default color */
-    transition: color 0.2s;
-}
-
-.toolbar .tab-btn.active .material-symbols-rounded {
-    color: #1c1c1c !important;  /* Force color on active */
-}
-      
+        
+        .toolbar .tab-btn .material-symbols-rounded {
+            color: var(--text-color) !important;  /* Force default color */
+            transition: color 0.2s;
+        }
+        
+        .toolbar .tab-btn.active .material-symbols-rounded {
+            color: var(--background-color) !important;  /* Force color on active */
+        }
+          
         .content {
             background-color: transparent;
-            border: 2px solid #666666;
+            border: 2px solid var(--modal-transparent);
             border-radius: 25px;
             padding: 20px;
             min-height: 400px;
         }
-
+        
         /* Alarm Section */
         .alarm-controls {
             display: flex;
@@ -80,33 +126,34 @@
             justify-content: center;
             align-items: center;
         }
-
-.time-picker, .timezone-select {
-    background-color: #666666;
-    border: none;
-    border-radius: 25px;
-    color: #f9f9f9;
-    padding: 8px 15px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-}
-
+        
+        .time-picker, .timezone-select {
+            background-color: var(--search-background);
+            border: none;
+            border-radius: 25px;
+            color: var(--text-color);
+            padding: 8px 15px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        
         .alarm-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
-
+        
         .alarm-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #333;
+            background-color: var(--modal-background);
             padding: 15px;
             border-radius: 15px;
         }
-
+        
         /* Stopwatch Section */
         .stopwatch-display {
             font-size: 48px;
@@ -114,25 +161,25 @@
             margin: 20px 0;
             font-family: monospace;
         }
-
+        
         .stopwatch-controls {
             display: flex;
             justify-content: center;
             gap: 10px;
             margin-bottom: 20px;
         }
-
+        
         .lap-list {
             overflow-y: auto;
         }
-
+        
         .lap-item {
             display: flex;
             justify-content: space-between;
             padding: 10px;
-            border-bottom: 1px solid #666666;
+            border-bottom: 1px solid var(--modal-transparent);
         }
-
+        
         /* World Clock Section */
         .clock-controls {
             display: flex;
@@ -140,46 +187,46 @@
             margin-bottom: 20px;
             justify-content: center;
         }
-
+        
         .clock-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
-
+        
         .clock-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #333;
+            background-color: var(--modal-background);
             padding: 15px;
             border-radius: 15px;
         }
-
+        
         /* Bedtime Tips Section */
         .tips-container {
             padding: 20px;
         }
-
+        
         .tip-item {
-    background-color: #333;
-    padding: 15px;
-    border-radius: 15px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-align: left;  /* Ensure left alignment */
+            background-color: var(--modal-background);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-align: left;  /* Ensure left alignment */
         }
-
+        
         .material-symbols-rounded {
             font-size: 24px;
-            color: #f9f9f9
+            color: var(--text-color);
         }
-
+        
         .action-btn {
-            background-color: #666666;
-            color: white;
+            background-color: var(--search-background);
+            color: var(--text-color);
             border: none;
             border-radius: 50px;
             padding: 8px 20px;
@@ -189,11 +236,49 @@
             justify-content: center;
             gap: 8px;
             height: 40px;
+            backdrop-filter: blur(10px);
         }
-
+        
         .action-btn:hover {
-            background-color: #bdd6ff;
-            color: #1c1c1c;
+            background-color: var(--text-color);
+            color: var(--background-color);
+        }
+        
+        /* For clickable elements */
+        button, 
+        .tab-btn,
+        .action-btn {
+            transform: scale(1);
+            transition: transform 0.15s cubic-bezier(0.2, 0, 0.38, 0.9);
+        }
+        
+        /* Active effect */
+        button:active, 
+        .tab-btn:active,
+        .action-btn:active {
+            transform: scale(0.96);
+            transition: transform 0.1s cubic-bezier(0.2, 0, 0.38, 0.9);
+        }
+        
+        /* Reduce animations */
+        .reduce-animations * {
+            animation: none !important;
+            transition: opacity 0.3s ease !important;
+            transition-property: opacity !important;
+        }
+        
+        .reduce-animations button,
+        .reduce-animations .tab-btn,
+        .reduce-animations .action-btn {
+            transform: scale(1) !important;
+            transition: opacity 0.3s ease !important;
+        }
+        
+        .reduce-animations button:active,
+        .reduce-animations .tab-btn:active,
+        .reduce-animations .action-btn:active {
+            transform: scale(0.98) !important;
+            transition: none !important;
         }
     </style>
 </head>
