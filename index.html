@@ -82,7 +82,7 @@
             border: none;
             border-radius: 25px;
             position: fixed; /* Keep toolbar fixed at the top */
-            top: 10px; /* Distance from the top */
+            top: 5px; /* Distance from the top */
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000; /* Ensure it stays above other content */
@@ -192,7 +192,7 @@
             display: flex;
             justify-content: space-between;
             padding: 10px;
-            border-bottom: 1px solid var(--modal-transparent);
+            border-bottom: 1px solid var(--search-background);
         }
         
         /* World Clock Section */
@@ -289,6 +289,12 @@
         .reduce-animations .action-btn:active {
             transform: scale(0.98) !important;
             transition: none !important;
+        }
+
+        @media (max-width: 699px) {
+            .toolbar {
+                top: 60px;
+            }
         }
     </style>
 </head>
