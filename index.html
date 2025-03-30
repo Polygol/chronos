@@ -86,6 +86,7 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000; /* Ensure it stays above other content */
+            transition: top 0.3s ease;
         }
         
         .tab-btn {
@@ -381,7 +382,6 @@
         });
 
         // Alarm Functionality
-let alarms = [];
 let originalTitle = document.title;
 let alarms = JSON.parse(localStorage.getItem('alarms')) || [];
 
@@ -486,6 +486,7 @@ function deleteAlarm(id) {
         let stopwatchElapsedTime = 0;
         let stopwatchRunning = false;
         let stopwatchRequestFrame;
+        let laps = [];
         
         function startStopwatch() {
             if (!stopwatchRunning) {
@@ -506,8 +507,10 @@ function deleteAlarm(id) {
         function resetStopwatch() {
             stopwatchRunning = false;
             stopwatchElapsedTime = 0;
+            laps = [];
             cancelAnimationFrame(stopwatchRequestFrame);
             document.getElementById('stopwatchDisplay').textContent = '00:00:00.000';
+            renderLaps(); // Ensure lap list clears when resetting
         }
         
         function updateStopwatch() {
@@ -525,6 +528,33 @@ function deleteAlarm(id) {
             let seconds = totalSeconds % 60;
             
             return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(milliseconds).padStart(3, '0')}`;
+        }
+        
+        // Lap Handling
+        document.getElementById('lapStopwatch').addEventListener('click', () => {
+            if (stopwatchRunning) {
+                laps.push(stopwatchElapsedTime);
+                renderLaps();
+            }
+        });
+        
+        function renderLaps() {
+            const lapList = document.getElementById('lapList');
+            if (laps.length > 0) {
+                lapList.innerHTML = `
+                    <div class="stopwatch-header">
+                        <span id="stopwatchDisplay">${formatTime(stopwatchElapsedTime)}</span>
+                    </div>
+                    ${laps.map((lap, index) => `
+                        <div class="lap-item">
+                            <span>Lap ${index + 1}</span>
+                            <span>${formatTime(lap)}</span>
+                        </div>
+                    `).join('')}
+                `;
+            } else {
+                lapList.innerHTML = "";
+            }
         }
         
         // Button Event Listeners
