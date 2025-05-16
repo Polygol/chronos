@@ -315,72 +315,63 @@
     </style>
 </head>
 <body>
-    <div class="toolbar">
-        <button class="tab-btn active" data-tab="alarm">
-            <span class="material-symbols-rounded">alarm</span>
-            Alarm
-        </button>
-        <button class="tab-btn" data-tab="stopwatch">
-            <span class="material-symbols-rounded">timer</span>
-            Stopwatch
-        </button>
-        <button class="tab-btn" data-tab="worldclock">
-            <span class="material-symbols-rounded">public</span>
-            Worlds
-        </button>
-        <button class="tab-btn" data-tab="bedtime">
-            <span class="material-symbols-rounded">bedtime</span>
-            Bedtime
-        </button>
-    </div>
-
-    <div class="content">
+    <div class="container">
+        <div class="tab-container">
+            <button class="tab-btn active" data-tab="alarm">
+                <span class="material-symbols-rounded">alarm</span>Alarm
+            </button>
+            <button class="tab-btn" data-tab="stopwatch">
+                <span class="material-symbols-rounded">timer</span>Stopwatch
+            </button>
+            <button class="tab-btn" data-tab="worldclock">
+                <span class="material-symbols-rounded">public</span>Worlds
+            </button>
+            <button class="tab-btn" data-tab="bedtime">
+                <span class="material-symbols-rounded">bedtime</span>Bedtime
+            </button>
+        </div>
+        
         <!-- Alarm Section -->
-        <div id="alarm" class="section">
-            <div class="alarm-controls">
+        <div class="tab-content active" id="alarm">
+            <div class="input-section">
                 <input type="time" class="time-picker" id="alarmTime">
                 <button class="action-btn" id="addAlarm">
-                    <span class="material-symbols-rounded">add</span>
-                    Add Alarm
+                    <span class="material-symbols-rounded">add</span>Add Alarm
                 </button>
             </div>
             <div class="alarm-list" id="alarmList"></div>
         </div>
-
+        
         <!-- Stopwatch Section -->
-        <div id="stopwatch" class="section" style="display: none;">
+        <div class="tab-content" id="stopwatch">
             <div class="stopwatch-display" id="stopwatchDisplay">00:00:00.000</div>
             <div class="stopwatch-controls">
                 <button class="action-btn" id="startStopwatch">
-                    <span class="material-symbols-rounded">play_arrow</span>
-                    Start
+                    <span class="material-symbols-rounded">play_arrow</span>Start
                 </button>
                 <button class="action-btn" id="lapStopwatch">
-                    <span class="material-symbols-rounded">flag</span>
-                    Lap
+                    <span class="material-symbols-rounded">flag</span>Lap
                 </button>
                 <button class="action-btn" id="resetStopwatch">
-                    <span class="material-symbols-rounded">restart_alt</span>
-                    Reset
+                    <span class="material-symbols-rounded">restart_alt</span>Reset
                 </button>
             </div>
             <div class="lap-list" id="lapList"></div>
         </div>
-
+        
         <!-- World Clock Section -->
-        <div id="worldclock" class="section" style="display: none;">
-            <div class="clock-controls">
+        <div class="tab-content" id="worldclock">
+            <div class="input-section">
                 <select class="timezone-select" id="timezoneSelect"></select>
                 <button class="action-btn" id="addClock">
-                    <span class="material-symbols-rounded">add</span>
-                    Add Clock
+                    <span class="material-symbols-rounded">add</span>Add Clock
                 </button>
             </div>
             <div class="clock-list" id="clockList"></div>
         </div>
-
+        
         <!-- Bedtime Tips Section -->
-        <div id="bedtime" class="section" style="display: none;">
+        <div class="tab-content" id="bedtime">
             <div class="tips-container" id="tipsContainer"></div>
         </div>
     </div>
