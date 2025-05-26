@@ -275,23 +275,6 @@
             border-radius: 15px;
         }
         
-        /* Bedtime Tips Section */
-        .tips-container {
-            padding: 20px;
-        }
-        
-        .tip-item {
-            background-color: var(--modal-background);
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-align: left;  /* Ensure left alignment */
-            border: 1px solid var(--glass-border);
-        }
-        
         .material-symbols-rounded {
             font-size: 24px;
             color: var(--text-color);
@@ -377,10 +360,6 @@
                 <span class="material-symbols-rounded">public</span>
                 Worlds
             </button>
-            <button class="tab-btn" data-tab="bedtime">
-                <span class="material-symbols-rounded">bedtime</span>
-                Bedtime
-            </button>
         </div>
         <!-- Alarm Section -->
         <div id="alarm" class="section">
@@ -422,10 +401,6 @@
                 </button>
             </div>
             <div class="clock-list" id="clockList"></div>
-        </div>
-        <!-- Bedtime Tips Section -->
-        <div id="bedtime" class="section" style="display: none;">
-            <div class="tips-container" id="tipsContainer"></div>
         </div>
     </div>
 
@@ -646,25 +621,6 @@ function deleteAlarm(id) {
         // Update world clocks every second
         setInterval(renderWorldClocks, 1000);
 
-        // Bedtime Tips
-        const bedtimeTips = [
-            "Maintain a consistent sleep schedule.",
-            "Avoid screens 1 hour before bed.",
-            "Keep your bedroom cool and dark.",
-            "Practice relaxation techniques.",
-            "Avoid caffeine in the evening."
-        ];
-
-        function renderBedtimeTips() {
-            const tipsContainer = document.getElementById('tipsContainer');
-            tipsContainer.innerHTML = bedtimeTips.map(tip => `
-                <div class="tip-item">
-                    <span class="material-symbols-rounded">tips_and_updates</span>
-                    ${tip}
-                </div>
-            `).join('');
-        }
-
       // Theme synchronization for Gurapp side
       document.addEventListener('DOMContentLoaded', () => {
           // Initial theme application based on localStorage
@@ -692,7 +648,6 @@ function deleteAlarm(id) {
           });
       });
 
-        renderBedtimeTips();
         renderAlarms();
         renderWorldClocks();
     </script>
