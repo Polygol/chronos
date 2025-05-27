@@ -63,6 +63,7 @@
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
+            font-variant-numeric: tabular-nums;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 10.04 10.04"><circle cx="5.02" cy="5.02" r="4.52" style="fill:rgba(0,0,0,0.5);stroke:rgba(255,255,255,0.5);stroke-width:1"/></svg>') 10 10, auto !important;
         }
         
@@ -247,17 +248,12 @@
             transition: stroke-dashoffset 0.3s ease;
         }
         
-        .progress-ring.active circle.progress {
-            stroke: #4CAF50;
-        }
-        
         .timer-display {
             position: absolute;
             font-size: 48px;
             font-weight: 600;
             cursor: pointer;
             user-select: none;
-            font-family: monospace;
         }
         
         .timer-input {
@@ -414,31 +410,6 @@
             transition: none !important;
         }
 
-        /* Timer widget for when timer is running */
-        .timer-widget {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: var(--modal-background);
-            padding: 10px 15px;
-            border-radius: 25px;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            z-index: 1001;
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-        }
-
-        .timer-icon {
-            font-size: 18px;
-        }
-
-        .timer-text {
-            font-family: monospace;
-            font-weight: 600;
-        }
-
         @media (max-width: 730px) {
             .toolbar {
                 justify-content: flex-start;
@@ -460,12 +431,6 @@
     </style>
 </head>
 <body>
-    <!-- Timer Widget -->
-    <div class="timer-widget" id="timer-widget">
-        <span class="material-symbols-rounded timer-icon">timer</span>
-        <span class="timer-text" id="timer-text">00:00</span>
-    </div>
-
     <div class="content">
         <div class="toolbar">
             <button class="tab-btn active" data-tab="alarm">
@@ -616,23 +581,7 @@
             if (!wasRunning) totalTime = timeLeft;
             totalTime = Math.max(totalTime, timeLeft);
             updateDisplay(); 
-            updateTimerWidget(); 
             updateActionButtons();
-        }
-
-        const timerWidget = document.getElementById('timer-widget');
-        const timerText = document.getElementById('timer-text');
-
-        function updateTimerWidget() {
-            timerWidget.style.display = timeLeft > 0 ? 'flex' : 'none';
-            timerText.textContent = formatTime(timeLeft);
-            const timerIcon = document.querySelector('.timer-icon');
-
-            if (timerId) {
-                timerIcon.textContent = 'timer';
-            } else {
-                timerIcon.textContent = 'pause';
-            }
         }
 
         function toggleTimer() {
@@ -645,7 +594,6 @@
                     timerId = setInterval(() => {
                         timeLeft--;
                         updateDisplay();
-                        updateTimerWidget();
                         if (timeLeft <= 0) {
                             clearInterval(timerId);
                             timerId = null;
@@ -658,7 +606,6 @@
                 }
             }
             updateActionButtons();
-            updateTimerWidget();
         }
 
         function updateActionButtons() {
@@ -684,7 +631,6 @@
             timeLeft = 0; 
             totalTime = 0; 
             updateDisplay(); 
-            updateTimerWidget();
             startBtn.innerHTML = '<span class="material-symbols-rounded">play_arrow</span>';
             timerAlarmSound.pause(); 
             timerAlarmSound.currentTime = 0; 
