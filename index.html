@@ -637,6 +637,8 @@
         function playTimerAlarm() {
             timerAlarmSound.play();
             updateActionButtons();
+
+            Gurasuraisu.showPopup(`Timer finished`);
             
             // Show notification
             if ("Notification" in window && Notification.permission === "granted") {
@@ -724,7 +726,7 @@
             
            document.title = "⏰ Alarm";
            
-           alert(`⏰ Alarm • ${alarmTime}`);
+           Gurasuraisu.showPopup(`Alarm • ${alarmTime}`);
            stopAlarm();
            
            if (Notification.permission === "granted") {
