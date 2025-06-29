@@ -641,11 +641,21 @@
             timerAlarmSound.play();
             updateActionButtons();
 
-            Gurasuraisu.showNotification('Timer', { icon: 'hourglass' });
-            
-            // Show notification
+            // Send notification via Gurasuraisu API with a button that calls a Gurapp function
+            Gurasuraisu.showNotification("Timer", {
+                icon: "hourglass", // Use a Material Symbols icon
+                buttonText: "Dismiss",
+                gurappAction: {
+                    appName: document.body.dataset.appName, // Get the app name from the body data-attribute
+                    functionName: "dismissTimerNotification", // Function to call in this Gurapp
+                    args: [] // Any arguments for that function (e.g., timer ID if multiple timers)
+                }
+            });
+
+            // Native browser notification (optional, as Gurasuraisu's own handles it)
             if ("Notification" in window && Notification.permission === "granted") {
-                new Notification("⏰ Timer", {
+                new Notification("⏰ Timer Finished", {
+                    body: "Your timer has finished!",
                     icon: "favicon.png"
                 });
             }
@@ -724,22 +734,34 @@
         function triggerAlarm(alarmTime) {
            alarmSound.play();
 
-           setTimeout(stopAlarm, 60000);
-            
-           document.title = "⏰ Alarm";
+           // The native notification will be dismissed by the user or the OS.
+           // Gurasuraisu's popup will have a dismiss button.
+           // Do NOT call stopAlarm() here directly, as the user needs to dismiss it.
+           
+           setTimeout(stopAlarm, 60000); // Auto-stop after 1 minute if not dismissed
 
-           Gurasuraisu.showNotification(`Alarm • ${alarmTime}`, { icon: 'alarm' });
+           document.title = "⏰ Alarm";
            
-           stopAlarm();
-           
-           if (Notification.permission === "granted") {
+           // Send notification via Gurasuraisu API with a button that calls a Gurapp function
+           Gurasuraisu.showNotification(`Alarm • ${alarmTime}`, {
+               icon: "alarm", // Material Symbols icon for active alarm
+               buttonText: "Dismiss",
+               gurappAction: {
+                   appName: document.body.dataset.appName, // "Chronos"
+                   functionName: "dismissAlarmNotification", // Function to call in this Gurapp
+                   args: [] 
+               }
+           });
+            
+           // Native browser notification (optional, as Gurasuraisu's own handles it)
+           if ("Notification" in window && Notification.permission === "granted") {
                new Notification("⏰ Alarm", {
                    body: alarmTime,
-                   icon: "favicon.png"
+                   icon: "favicon.png" // Path to Chronos favicon
                });
            }
         }
-
+                      
         function stopAlarm() {
             alarmSound.pause();
             alarmSound.currentTime = 0;
@@ -872,6 +894,41 @@
            saveWorldClocks();
            renderWorldClocks();
        }
+        
+        // This function will stop the alarm sound and reset the timer UI.
+        function dismissTimerNotification() {
+            // Re-use existing stopAlarm logic
+            stopAlarm(); 
+            // Also ensure timer state is reset if it's not already
+            resetTimer(); 
+        }
+
+        function dismissAlarmNotification() {
+            stopAlarm(); // Re-use existing stopAlarm logic
+        }
+
+        // Listener for messages from the parent (Gurasuraisu) to trigger specific actions
+        window.addEventListener('message', (event) => {
+            if (event.origin !== window.location.origin) return; // Security check
+
+            const data = event.data;
+
+            // Check if this is a request from the parent to execute a Gurapp action
+            if (data && data.type === 'gurapp-action-request' && data.functionName) {
+                const func = window[data.functionName]; // Get the function by name
+
+                if (typeof func === 'function') {
+                    func.apply(window, data.args || []); // Execute the function with its arguments
+                } else {
+                    console.warn(`Chronos Gurapp: Function '${data.functionName}' not found or not callable.`);
+                }
+            }
+            // Other message types (like themeUpdate, animationsUpdate) are handled by gurasuraisu-api.js
+        });
+
+        // Make the functions globally accessible for the message listener
+        window.dismissTimerNotification = dismissTimerNotification;
+        window.dismissAlarmNotification = dismissAlarmNotification;
 
        // Update world clocks every second
        setInterval(renderWorldClocks, 1000);
