@@ -641,12 +641,11 @@
             timerAlarmSound.play();
             updateActionButtons();
 
-            Gurasuraisu.showPopup(`Timer finished`);
+            Gurasuraisu.showNotification('Timer', { icon: 'hourglass' });
             
             // Show notification
             if ("Notification" in window && Notification.permission === "granted") {
-                new Notification("⏰ Timer Finished", {
-                    body: "Your timer has finished!",
+                new Notification("⏰ Timer", {
                     icon: "favicon.png"
                 });
             }
@@ -728,8 +727,9 @@
            setTimeout(stopAlarm, 60000);
             
            document.title = "⏰ Alarm";
+
+           Gurasuraisu.showNotification(`Alarm • ${alarmTime}`, { icon: 'alarm' });
            
-           Gurasuraisu.showPopup(`Alarm • ${alarmTime}`);
            stopAlarm();
            
            if (Notification.permission === "granted") {
