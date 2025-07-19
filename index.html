@@ -13,6 +13,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
+            --edge-refraction-filter: url('#edge-refraction-only');
+            
             /* Dark Theme (Default) Variables */
             --background-color-dark: #1c1c1c;
             --text-color-dark: #f9f9f9;
@@ -138,7 +140,7 @@
           width: 100%;
           height: 100%;
           z-index: -2;
-          backdrop-filter: blur(10px);
+          backdrop-filter: blur(2.5px);
           mask-image: linear-gradient(
             to bottom,
             rgba(0, 0, 0, 1) 0%,
@@ -164,7 +166,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(5px) var(--edge-refraction-filter);
         }
         
         .tab-btn.active {
@@ -203,7 +205,7 @@
             height: 40px;
             display: flex;
             align-items: center;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(5px) var(--edge-refraction-filter);
             border: 1px solid var(--glass-border);
         }
         
@@ -289,7 +291,7 @@
             border-radius: 50px;
             padding: 8px 16px;
             cursor: pointer;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(5px) var(--edge-refraction-filter);
             border: 1px solid var(--glass-border);
         }
         
@@ -365,7 +367,7 @@
             justify-content: center;
             gap: 8px;
             height: 40px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(5px) var(--edge-refraction-filter);
         }
         
         /* For clickable elements */
@@ -433,6 +435,32 @@
     </style>
 </head>
 <body data-app-name="Chronos">
+    <svg style="display: none">
+        <filter id="edge-refraction-only" color-interpolation-filters="linearRGB">
+            <!-- Part 1: Create the turbulence that will only be used at the edges -->
+            <feTurbulence type="fractalNoise" baseFrequency="0.01 0.04" numOctaves="2" result="turbulence"/>
+        
+            <!-- Part 2: Create a mask that is only opaque at the edges -->
+            <feMorphology in="SourceGraphic" operator="erode" radius="4" result="eroded"/>
+            <feComposite in="SourceGraphic" in2="eroded" operator="out" result="border_mask"/>
+            <feComposite in="turbulence" in2="border_mask" operator="in" result="edge_turbulence"/>
+        
+            <!-- Part 3: Create the final displacement map -->
+            <!-- First, create the 50% gray neutral background -->
+            <feFlood flood-color="#808080" result="neutral_base"/>
+            
+            <!-- Next, use feMerge to explicitly stack the edge turbulence ON TOP of the gray base.
+                 This is the key step that prevents the center from shifting. -->
+            <feMerge result="displacement_map">
+                <feMergeNode in="neutral_base"/>
+                <feMergeNode in="edge_turbulence"/>
+            </feMerge>
+        
+            <!-- Part 4: Apply the final, perfectly centered displacement map -->
+            <feDisplacementMap in="SourceGraphic" in2="displacement_map" scale="40" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+    </svg>
+    
     <div class="content">
         <div class="toolbar">
             <button class="tab-btn active" data-tab="alarm">
