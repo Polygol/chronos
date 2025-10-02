@@ -74,6 +74,30 @@
             -webkit-tap-highlight-color: transparent;
             font-variant-numeric: tabular-nums;
         }
+
+        /* For all clickable elements */
+        [onclick], 
+        button, 
+        a, 
+        input[type="button"], 
+        input[type="submit"],
+        .clickable {
+          cursor: pointer;
+          transform: scale(1);
+          transition: all 0.15s cubic-bezier(0.2, 0, 0.38, 0.9);
+        }
+        
+        /* Active effect (when clicking down) */
+        [onclick]:active, 
+        button:active, 
+        a:active, 
+        input[type="button"]:active, 
+        input[type="submit"]:active,
+        .clickable:active {
+          transform: scale(0.96);
+          transition: all 0.1s cubic-bezier(0.2, 0, 0.38, 0.9);
+          filter: brightness(1.5);
+        }
         
         body {
             background-color: var(--background-color-tr);
@@ -185,7 +209,11 @@
           
         .content {
             width: 100%;
-            max-width: 600px;
+        }
+
+        .section {
+            gap: 20px;
+            flex-direction: column;
         }
         
         /* Alarm Section */
@@ -314,19 +342,23 @@
         .stopwatch-controls {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 25px;
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
         }
         
         .lap-list {
             overflow-y: auto;
+            margin-bottom: 180px;
         }
         
         .lap-item {
             display: flex;
             justify-content: space-between;
             padding: 10px;
-            border-bottom: 1px solid var(--search-background);
+            border-bottom: 2px solid var(--search-background);
         }
         
         /* World Clock Section */
@@ -362,59 +394,37 @@
             color: var(--text-color);
             border: none;
             border-radius: 50px;
-            padding: 8px 20px;
+            padding: 12px 18px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            height: 40px;
             backdrop-filter: blur(5px) saturate(2) var(--edge-refraction-filter);
             box-shadow: var(--sun-shadow);
+            font-weight: 500;
         }
-        
-        /* For clickable elements */
-        button, 
-        .tab-btn,
-        .action-btn,
-        .btn {
-            transform: scale(1);
-            transition: all 0.15s cubic-bezier(0.2, 0, 0.38, 0.9);
-            border: 1px solid var(--glass-border);
+
+        .big-action-btn {
+            background-color: var(--search-background);
+            color: var(--text-color);
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            backdrop-filter: blur(5px) saturate(2) var(--edge-refraction-filter);
+            box-shadow: var(--sun-shadow);
+            font-weight: 500;
+            width: 100px;
+            height: 100px;
         }
-        
-        /* Active effect */
-        button:active, 
-        .tab-btn:active,
-        .action-btn:active,
-        .btn:active {
-            transform: scale(0.96);
-            transition: all 0.1s cubic-bezier(0.2, 0, 0.38, 0.9);
-            filter: brightness(1.5);
-        }
-        
-        /* Reduce animations */
-        .reduce-animations * {
-            animation: none !important;
-            transition: opacity 0.3s ease !important;
-            transition-property: opacity !important;
-        }
-        
-        .reduce-animations button,
-        .reduce-animations .tab-btn,
-        .reduce-animations .action-btn,
-        .reduce-animations .btn {
-            transform: scale(1) !important;
-            transition: opacity 0.3s ease !important;
-        }
-        
-        .reduce-animations button:active,
-        .reduce-animations .tab-btn:active,
-        .reduce-animations .action-btn:active,
-        .reduce-animations .btn:active {
-            transform: scale(0.98) !important;
-            transition: none !important;
-            filter: brightness(1.5);
+
+        .big-action-btn .material-symbols-rounded {
+            font-size: 34px;
         }
 
         @media (max-width: 730px) {
@@ -541,17 +551,14 @@
         <div id="stopwatch" class="section" style="display: none;">
             <div class="stopwatch-display" id="stopwatchDisplay">00:00:00.000</div>
             <div class="stopwatch-controls">
-                <button class="action-btn" id="startStopwatch">
+                <button class="big-action-btn" id="startStopwatch">
                     <span class="material-symbols-rounded">play_arrow</span>
-                    Start
                 </button>
                 <button class="action-btn" id="lapStopwatch">
                     <span class="material-symbols-rounded">flag</span>
-                    Lap
                 </button>
                 <button class="action-btn" id="resetStopwatch">
                     <span class="material-symbols-rounded">restart_alt</span>
-                    Reset
                 </button>
             </div>
             <div class="lap-list" id="lapList"></div>
@@ -577,7 +584,7 @@
                 document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
                 document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
-                document.getElementById(button.dataset.tab).style.display = 'block';
+                document.getElementById(button.dataset.tab).style.display = 'flex';
             });
         });
 
