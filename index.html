@@ -248,9 +248,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: var(--modal-background);
-            padding: 15px;
-            border-radius: 15px;
+            background-color: var(--search-background);
+            padding: 12px 12px 12px 28px;
+            border-radius: 28px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(5px) saturate(2) var(--edge-refraction-filter);
+            box-shadow: var(--sun-shadow);
+            font-size: 24px;
         }
         
         /* Timer Section */
@@ -406,6 +410,22 @@
             font-weight: 500;
         }
 
+        .clear-action-btn {
+            background-color: transparent;
+            color: var(--text-color);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            backdrop-filter: none;
+            box-shadow: none;
+            font-weight: 500;
+        }
+        
         .big-action-btn {
             background-color: var(--search-background);
             color: var(--text-color);
@@ -840,7 +860,7 @@
             alarmList.innerHTML = alarms.map(alarm => `
                 <div class="alarm-item">
                     <span>${alarm.time}</span>
-                    <button class="action-btn" onclick="deleteAlarm(${alarm.id})">
+                    <button class="clear-action-btn" onclick="deleteAlarm(${alarm.id})">
                         <span class="material-symbols-rounded">delete</span>
                     </button>
                 </div>
@@ -942,7 +962,7 @@
                        <div>${clock.timezone}</div>
                        <div>${moment().tz(clock.timezone).format('HH:mm:ss')}</div>
                    </div>
-                   <button class="action-btn" onclick="deleteClock(${clock.id})">
+                   <button class="clear-action-btn" onclick="deleteClock(${clock.id})">
                        <span class="material-symbols-rounded">delete</span>
                    </button>
                </div>
