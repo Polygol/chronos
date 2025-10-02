@@ -225,6 +225,7 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 1;
+            transition: gap 0.3s cubic-bezier(.3,1.2,.64,1);
         }
         
         .time-picker, .timezone-select {
@@ -257,6 +258,10 @@
             opacity: 0;
         }
 
+        .clock-controls:has(.timezone-select:focus) .clock-controls {
+            gap: 0;
+        }
+
         .time-picker {
             transition: all 0.3s cubic-bezier(.3,1.2,.64,1);
         }
@@ -269,6 +274,10 @@
             scale: 0;
             width: 0;
             opacity: 0;
+        }
+
+        .alarm-controls:has(.time-picker:focus) .alarm-controls {
+            gap: 0;
         }
         
         .alarm-list {
@@ -419,6 +428,7 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 1;
+            transition: gap 0.3s cubic-bezier(.3,1.2,.64,1);
         }
         
         .clock-list {
