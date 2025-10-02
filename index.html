@@ -259,7 +259,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 20px auto;
         }
         
         .progress-ring {
@@ -283,16 +282,17 @@
         
         .timer-display {
             position: absolute;
-            font-size: 48px;
-            font-weight: 600;
+            font-size: 10vw;
             cursor: pointer;
             user-select: none;
+            font-family: 'Inter Numeric';
+            font-variation-settings: "RDNS" 1;
+            font-weight: bold;
         }
         
         .timer-input {
             position: absolute;
             font-size: 48px;
-            font-weight: 600;
             background: transparent;
             border: none;
             color: var(--text-color);
@@ -335,6 +335,9 @@
             font-size: 12vw;
             text-align: center;
             margin: 20px 0;
+            font-family: 'Inter Numeric', 'Inter';
+            font-variation-settings: "RDNS" 1;
+            font-weight: bold;
         }
         
         .stopwatch-controls {
@@ -522,9 +525,9 @@
         <!-- Timer Section -->
         <div id="timer" class="section" style="display: none;">
             <div class="timer-circle">
-                <svg class="progress-ring" width="300" height="300">
-                    <circle cx="150" cy="150" r="140" />
-                    <circle class="progress" cx="150" cy="150" r="140" />
+                <svg class="progress-ring" width="500" height="500">
+                    <circle cx="250" cy="250" r="240" />
+                    <circle class="progress" cx="250" cy="250" r="240" />
                 </svg>
                 <div class="timer-display" id="display">00:00</div>
                 <input type="text" class="timer-input" id="timeInput" maxlength="4" pattern="\d*">
@@ -597,6 +600,7 @@
         const progressRing = document.querySelector('.progress-ring');
         const progressCircle = document.querySelector('.progress-ring circle.progress');
         const timerContainer = document.querySelector('.timer-container');
+        const quickTimeControls = document.querySelector('.controls');
 
         // Load the MP3 sound for the timer alarm
         const timerAlarmSound = new Audio('https://www.gstatic.com/delight/funbox/timer_utilitarian_v2.mp3');
@@ -606,7 +610,7 @@
         progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
 
         function setProgress(percent) {
-            const offset = circumference - (percent / 100 * circumference);
+            const offset = circumference - (percent / 200 * circumference);
             progressCircle.style.strokeDashoffset = offset;
         }
 
@@ -664,16 +668,20 @@
             const isTimerAlarmPlaying = timerAlarmSound.currentTime > 0 && !timerAlarmSound.paused;
             if (timeLeft === 0 && isTimerAlarmPlaying){
                 startBtn.style.display = 'none';
-                resetBtn.style.display = 'block';
+                resetBtn.style.display = 'none';
+                quickTimeControls.style.display = 'block';
             } else if (timeLeft === 0 && !isTimerAlarmPlaying){
                 startBtn.style.display = 'none';
                 resetBtn.style.display = 'block';
+                quickTimeControls.style.display = 'block';
             } else if (timeLeft > 0){
                 startBtn.style.display = 'block';
                 resetBtn.style.display = 'block';
+                quickTimeControls.style.display = 'none';
             } else {
                 startBtn.style.display = 'block';
                 resetBtn.style.display = 'none';
+                quickTimeControls.style.display = 'block';
             }
         }
 
