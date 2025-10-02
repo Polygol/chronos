@@ -894,7 +894,7 @@
                 <div class="alarm-item">
                     <span>${alarm.time}</span>
                     <button class="clear-action-btn" onclick="deleteAlarm(${alarm.id})">
-                        <span class="material-symbols-rounded">delete</span>
+                        <span class="material-symbols-rounded">cancel</span>
                     </button>
                 </div>
             `).join('');
@@ -996,7 +996,7 @@
                        <div>${moment().tz(clock.timezone).format('HH:mm:ss')}</div>
                    </div>
                    <button class="clear-action-btn" onclick="deleteClock(${clock.id})">
-                       <span class="material-symbols-rounded">delete</span>
+                       <span class="material-symbols-rounded">cancel</span>
                    </button>
                </div>
            `).join('');
