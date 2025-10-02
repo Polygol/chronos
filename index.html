@@ -334,7 +334,7 @@
         
         /* Stopwatch Section */
         .stopwatch-display {
-            font-size: 48px;
+            font-size: 12vw;
             text-align: center;
             margin: 20px 0;
         }
@@ -554,10 +554,10 @@
                 <button class="big-action-btn" id="startStopwatch">
                     <span class="material-symbols-rounded">play_arrow</span>
                 </button>
-                <button class="action-btn" id="lapStopwatch">
+                <button class="big-action-btn" id="lapStopwatch">
                     <span class="material-symbols-rounded">flag</span>
                 </button>
-                <button class="action-btn" id="resetStopwatch">
+                <button class="big-action-btn" id="resetStopwatch">
                     <span class="material-symbols-rounded">restart_alt</span>
                 </button>
             </div>
@@ -855,10 +855,10 @@
 
         document.getElementById('startStopwatch').addEventListener('click', function() {
             if (!isRunning) {
-                this.innerHTML = '<span class="material-symbols-rounded">pause</span>Stop';
+                this.innerHTML = '<span class="material-symbols-rounded">pause</span>';
                 stopwatchInterval = setInterval(updateStopwatch, 10);
             } else {
-                this.innerHTML = '<span class="material-symbols-rounded">play_arrow</span>Start';
+                this.innerHTML = '<span class="material-symbols-rounded">play_arrow</span>';
                 clearInterval(stopwatchInterval);
             }
             isRunning = !isRunning;
