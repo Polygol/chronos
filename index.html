@@ -640,7 +640,7 @@
         progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
 
         function setProgress(percent) {
-            const offset = circumference - (percent / 400 * circumference);
+            const offset = circumference - (percent / 50 * circumference);
             progressCircle.style.strokeDashoffset = offset;
         }
 
