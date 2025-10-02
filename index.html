@@ -322,7 +322,7 @@
         
         .timer-display {
             position: absolute;
-            font-size: 10vw;
+            font-size: clamp(25px, 25vw, 140px);
             cursor: pointer;
             user-select: none;
             font-family: 'Inter Numeric', 'Inter';
@@ -515,15 +515,12 @@
                 font-size: 0;
                 padding: 12px 24px;
             }
-
-            .timer-circle {
-                transform: scale(0.8);
-            }
-
-            .timer-display, .timer-input {
-                font-size: 36px;
-            }
         }
+
+        @media (max-width: 550px) {
+            .progress-ring {
+                display: none;
+            }
     </style>
 </head>
 <body data-app-name="CHRONOS">
@@ -688,7 +685,7 @@
         progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
 
         function setProgress(percent) {
-            const offset = circumference - (percent / 125 * circumference);
+            const offset = circumference - (percent / 100 * circumference);
             progressCircle.style.strokeDashoffset = offset;
         }
 
