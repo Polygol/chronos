@@ -241,6 +241,7 @@
             border: 1px solid var(--glass-border);
             font-size: 24px;
             font-weight: 500;
+            margin-right: 25px;
         }
 
         .timezone-select {
@@ -258,10 +259,6 @@
             opacity: 0;
         }
 
-        .clock-controls:has(.timezone-select:focus) .clock-controls {
-            gap: 0;
-        }
-
         .time-picker {
             transition: all 0.3s cubic-bezier(.3,1.2,.64,1);
         }
@@ -274,10 +271,6 @@
             scale: 0;
             width: 0;
             opacity: 0;
-        }
-
-        .alarm-controls:has(.time-picker:focus) .alarm-controls {
-            gap: 0;
         }
         
         .alarm-list {
@@ -422,13 +415,11 @@
         /* World Clock Section */
         .clock-controls {
             display: flex;
-            gap: 25px;
             position: fixed;
             bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1;
-            transition: gap 0.3s cubic-bezier(.3,1.2,.64,1);
         }
         
         .clock-list {
@@ -664,10 +655,18 @@
                 document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
                 document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
-                document.getElementById(button.dataset.tab).style.display = 'flex';
+                
+                const activeTab = button.dataset.tab;
+                document.getElementById(activeTab).style.display = 'flex';
+
+                if (activeTab === 'stopwatch' || activeTab === 'timer') {
+                    document.body.style.justifyContent = 'center';
+                } else {
+                    document.body.style.justifyContent = 'flex-start';
+                }
             });
         });
-
+        
         // Timer Variables
         let totalTime = 0;
         let timeLeft = 0;
@@ -689,7 +688,7 @@
         progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
 
         function setProgress(percent) {
-            const offset = circumference - (percent / 150 * circumference);
+            const offset = circumference - (percent / 125 * circumference);
             progressCircle.style.strokeDashoffset = offset;
         }
 
