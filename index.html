@@ -219,23 +219,27 @@
         /* Alarm Section */
         .alarm-controls {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            justify-content: center;
-            align-items: center;
+            gap: 25px;
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
         }
         
         .time-picker, .timezone-select {
             background-color: var(--search-background);
-            border-radius: 25px;
+            border-radius: 28px;
             color: var(--text-color);
             padding: 12px 18px;
-            height: 50px;
+            height: 100px;
             display: flex;
             align-items: center;
             backdrop-filter: blur(5px) saturate(2) var(--edge-refraction-filter);
             box-shadow: var(--sun-shadow);
             border: 1px solid var(--glass-border);
+            font-size: 24px;
+            font-weight: 500;
         }
         
         .alarm-list {
@@ -319,6 +323,7 @@
             bottom: 180px;
             left: 50%;
             transform: translateX(-50%);
+            z-index: 1;
         }
         
         .controls .btn {
@@ -341,6 +346,7 @@
             bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
+            z-index: 1;
         }
         
         /* Stopwatch Section */
@@ -378,9 +384,12 @@
         /* World Clock Section */
         .clock-controls {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            justify-content: center;
+            gap: 25px;
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
         }
         
         .clock-list {
@@ -546,7 +555,7 @@
         <div id="alarm" class="section">
             <div class="alarm-controls">
                 <input type="time" class="time-picker" id="alarmTime">
-                <button class="action-btn" id="addAlarm">
+                <button class="big-action-btn" id="addAlarm">
                     <span class="material-symbols-rounded">add</span>
                 </button>
             </div>
@@ -600,7 +609,7 @@
         <div id="worldclock" class="section" style="display: none;">
             <div class="clock-controls">
                 <select class="timezone-select" id="timezoneSelect"></select>
-                <button class="action-btn" id="addClock">
+                <button class="big-action-btn" id="addClock">
                     <span class="material-symbols-rounded">add</span>
                 </button>
             </div>
