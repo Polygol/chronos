@@ -229,8 +229,8 @@
             background-color: var(--search-background);
             border-radius: 25px;
             color: var(--text-color);
-            padding: 8px 15px;
-            height: 40px;
+            padding: 12px 18px;
+            height: 50px;
             display: flex;
             align-items: center;
             backdrop-filter: blur(5px) saturate(2) var(--edge-refraction-filter);
@@ -393,9 +393,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: var(--modal-background);
-            padding: 15px;
-            border-radius: 15px;
+            background-color: var(--search-background);
+            padding: 12px 12px 12px 28px;
+            border-radius: 28px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(5px) saturate(2) var(--edge-refraction-filter);
+            box-shadow: var(--sun-shadow);
         }
         
         .material-symbols-rounded {
@@ -545,7 +548,6 @@
                 <input type="time" class="time-picker" id="alarmTime">
                 <button class="action-btn" id="addAlarm">
                     <span class="material-symbols-rounded">add</span>
-                    Add Alarm
                 </button>
             </div>
             <div class="alarm-list" id="alarmList"></div>
@@ -600,7 +602,6 @@
                 <select class="timezone-select" id="timezoneSelect"></select>
                 <button class="action-btn" id="addClock">
                     <span class="material-symbols-rounded">add</span>
-                    Add Clock
                 </button>
             </div>
             <div class="clock-list" id="clockList"></div>
