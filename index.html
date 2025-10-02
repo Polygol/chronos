@@ -263,6 +263,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            margin-bottom: 180px;
         }
         
         .progress-ring {
@@ -311,9 +312,13 @@
         
         .controls {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             justify-content: center;
             flex-wrap: wrap;
+            position: fixed;
+            bottom: 180px;
+            left: 50%;
+            transform: translateX(-50%);
         }
         
         .controls .btn {
@@ -330,8 +335,12 @@
         
         .action-buttons {
             display: flex;
-            gap: 25px;
             justify-content: center;
+            gap: 25px;
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
         }
         
         /* Stopwatch Section */
@@ -630,7 +639,7 @@
         progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
 
         function setProgress(percent) {
-            const offset = circumference - (percent / 200 * circumference);
+            const offset = circumference - (percent / 400 * circumference);
             progressCircle.style.strokeDashoffset = offset;
         }
 
