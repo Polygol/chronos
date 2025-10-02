@@ -243,7 +243,6 @@
         }
 
         .timezone-select {
-            width: 250px;
             transition: all 0.3s cubic-bezier(.3,1.2,.64,1);
         }
 
@@ -252,6 +251,21 @@
         }
         
         .clock-controls:has(.timezone-select:focus) button#addClock.big-action-btn {
+            scale: 0;
+            width: 0;
+            opacity: 0;
+        }
+
+        .time-picker {
+            width: 250px;
+            transition: all 0.3s cubic-bezier(.3,1.2,.64,1);
+        }
+
+        .time-picker:focus {
+            width: 500px;
+        }
+        
+        .alarm-controls:has(.time-picker:focus) button#addAlarm.big-action-btn {
             scale: 0;
             width: 0;
             opacity: 0;
