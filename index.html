@@ -181,7 +181,7 @@
             transition: all 0.3s cubic-bezier(.3, 1.2, .64, 1) ! IMPORTANT;
             display: flex;
             align-items: center;
-            backdrop-filter: blur(5px) saturate(2) var(--edge-refraction-filter);
+            backdrop-filter: var(--edge-refraction-filter) saturate(2) blur(2.5px);
             box-shadow: var(--sun-shadow);
             border: 1px solid var(--glass-border);
         }
@@ -242,7 +242,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(5px) saturate(2) var(--edge-refraction-filter);
+            backdrop-filter: var(--edge-refraction-filter) saturate(2) blur(2.5px);
             box-shadow: var(--sun-shadow), 0 0 15px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--glass-border);
             font-size: 24px;
@@ -296,7 +296,7 @@
             padding: 12px 12px 12px 28px;
             border-radius: 28px;
             border: 1px solid var(--glass-border);
-            backdrop-filter: blur(5px) saturate(2) var(--edge-refraction-filter);
+            backdrop-filter: var(--edge-refraction-filter) saturate(2) blur(2.5px);
             box-shadow: var(--sun-shadow);
             font-size: 24px;
         }
@@ -373,7 +373,7 @@
             border-radius: 50px;
             padding: 8px 16px;
             cursor: pointer;
-            backdrop-filter: blur(5px) saturate(2) var(--edge-refraction-filter);
+            backdrop-filter: var(--edge-refraction-filter) saturate(2) blur(2.5px);
             box-shadow: var(--sun-shadow);
             border: 1px solid var(--glass-border);
         }
@@ -445,7 +445,7 @@
             padding: 12px 12px 12px 28px;
             border-radius: 28px;
             border: 1px solid var(--glass-border);
-            backdrop-filter: blur(5px) saturate(2) var(--edge-refraction-filter);
+            backdrop-filter: var(--edge-refraction-filter) saturate(2) blur(2.5px);
             box-shadow: var(--sun-shadow);
         }
         
@@ -465,7 +465,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            backdrop-filter: blur(5px) saturate(2) var(--edge-refraction-filter);
+            backdrop-filter: var(--edge-refraction-filter) saturate(2) blur(2.5px);
             box-shadow: var(--sun-shadow);
             font-weight: 500;
         }
@@ -498,7 +498,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            backdrop-filter: blur(5px) saturate(2) var(--edge-refraction-filter);
+            backdrop-filter: var(--edge-refraction-filter) saturate(2) blur(2.5px);
             box-shadow: var(--sun-shadow), 0 0 15px rgba(0, 0, 0, 0.05);
             font-weight: 500;
             width: 75px;
@@ -556,10 +556,10 @@
         
             <!-- Part 5: Apply the displacement twice and combine the results. -->
             <!-- Pass 1: A positive scale refracts the top and left edges inward correctly. -->
-            <feDisplacementMap in="SourceGraphic" in2="displacement_map" scale="30" xChannelSelector="R" yChannelSelector="G" result="disp_positive"></feDisplacementMap>
+            <feDisplacementMap in="SourceGraphic" in2="displacement_map" scale="15" xChannelSelector="R" yChannelSelector="G" result="disp_positive"></feDisplacementMap>
             
             <!-- Pass 2: A negative scale refracts the bottom and right edges inward correctly. -->
-            <feDisplacementMap in="SourceGraphic" in2="displacement_map" scale="-30" xChannelSelector="R" yChannelSelector="G" result="disp_negative"></feDisplacementMap>
+            <feDisplacementMap in="SourceGraphic" in2="displacement_map" scale="-15" xChannelSelector="R" yChannelSelector="G" result="disp_negative"></feDisplacementMap>
             
             <!-- Part 6: Blend the two results. The 'lighten' mode takes the non-transparent pixels
                  from both passes. Since the "incorrect" refractions are pushed into transparent
