@@ -681,7 +681,6 @@
         let totalTime = 0;
         let timeLeft = 0;
         let timerId = null;
-        let liveActivityIframe = null; // To hold a reference to the activity
         const display = document.getElementById('display');
         const timeInput = document.getElementById('timeInput');
         const startBtn = document.getElementById('startBtn');
@@ -730,12 +729,6 @@
             updateActionButtons();
         }
 
-        // Find the iframe for the live activity
-        function findLiveActivityIframe() {
-            const parentDoc = window.parent.document;
-            return parentDoc.querySelector('.live-activity-notification[data-activity-id="chronos-timer"] iframe');
-        }
-
         function toggleTimer() {
             if (timerId) {
                 clearInterval(timerId);
@@ -755,17 +748,9 @@
                         timeLeft--;
                         updateDisplay();
                         
-                        // FIX: Look for the iframe on every tick to avoid race condition
-                        if (!liveActivityIframe) {
-                            liveActivityIframe = findLiveActivityIframe();
-                        }
-        
-                        if (liveActivityIframe && liveActivityIframe.contentWindow) {
-                            liveActivityIframe.contentWindow.postMessage({
-                                type: 'live-activity-update',
-                                timeLeft: timeLeft
-                            }, '*'); // Sending to child, wildcard is okay here.
-                        }
+                        // FIX: Use the new, robust API to send updates.
+                        // The parent OS will handle forwarding this to the iframe.
+                        Gurasuraisu.liveActivity.update('chronos-timer', { timeLeft: timeLeft });
         
                         if (timeLeft <= 0) {
                             clearInterval(timerId);
@@ -812,7 +797,6 @@
             timerAlarmSound.currentTime = 0; 
             updateActionButtons();
             Gurasuraisu.liveActivity.stop('chronos-timer');
-            liveActivityIframe = null; // Clear reference on reset
         }
         
         function playTimerAlarm() {
@@ -1091,21 +1075,8 @@
 
         // Listener for messages from parent AND from its own Live Activity
         window.addEventListener('message', (event) => {
-            // Security check for parent messages is in gurasuraisu-api.js
-            // This is for inter-app communication (Live Activity -> Main App)
+            if (event.source !== window.parent) return;
             const data = event.data;
-        
-            // Check if this is the live activity reporting it's ready
-            if (data && data.action === 'activity-ready') {
-                liveActivityIframe = findLiveActivityIframe();
-                // Send initial time when the activity is ready
-                if (liveActivityIframe && liveActivityIframe.contentWindow) {
-                    liveActivityIframe.contentWindow.postMessage({
-                        type: 'live-activity-update',
-                        timeLeft: timeLeft
-                    }, '*');
-                }
-            }
         
             // Check if the live activity's stop button was pressed
             if (data && data.action === 'stop-timer') {
