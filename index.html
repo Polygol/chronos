@@ -681,6 +681,7 @@
         let totalTime = 0;
         let timeLeft = 0;
         let timerId = null;
+        let liveActivityIframe = null; // To hold a reference to the activity
         const display = document.getElementById('display');
         const timeInput = document.getElementById('timeInput');
         const startBtn = document.getElementById('startBtn');
@@ -729,16 +730,39 @@
             updateActionButtons();
         }
 
+        // Find the iframe for the live activity
+        function findLiveActivityIframe() {
+            const parentDoc = window.parent.document;
+            return parentDoc.querySelector('.live-activity-notification[data-activity-id="chronos-timer"] iframe');
+        }
+
         function toggleTimer() {
             if (timerId) {
                 clearInterval(timerId);
                 timerId = null;
                 startBtn.innerHTML = '<span class="material-symbols-rounded">play_arrow</span>';
+                Gurasuraisu.liveActivity.stop('chronos-timer');
             } else {
                 if (timeLeft > 0) {
+                    Gurasuraisu.liveActivity.start({
+                        activityId: 'chronos-timer',
+                        url: '/chronos/liveactivities/timer-live-activity.html', 
+                        homescreen: true,
+                        height: '100px'
+                    });
+        
                     timerId = setInterval(() => {
                         timeLeft--;
                         updateDisplay();
+                        
+                        // Push update to the Live Activity iframe
+                        if (liveActivityIframe && liveActivityIframe.contentWindow) {
+                            liveActivityIframe.contentWindow.postMessage({
+                                type: 'live-activity-update',
+                                timeLeft: timeLeft
+                            }, '*');
+                        }
+        
                         if (timeLeft <= 0) {
                             clearInterval(timerId);
                             timerId = null;
@@ -783,8 +807,9 @@
             timerAlarmSound.pause(); 
             timerAlarmSound.currentTime = 0; 
             updateActionButtons();
+            Gurasuraisu.liveActivity.stop('chronos-timer');
         }
-
+        
         function playTimerAlarm() {
             timerAlarmSound.play();
             updateActionButtons();
@@ -1055,11 +1080,28 @@
             stopAlarm(); // Re-use existing stopAlarm logic
         }
 
-        // Listener for messages from the parent (Gurasuraisu) to trigger specific actions
+        // Listener for messages from parent AND from its own Live Activity
         window.addEventListener('message', (event) => {
-            if (event.origin !== window.location.origin) return; // Security check
-
+            // Security check for parent messages is in gurasuraisu-api.js
+            // This is for inter-app communication (Live Activity -> Main App)
             const data = event.data;
+        
+            // Check if this is the live activity reporting it's ready
+            if (data && data.action === 'activity-ready') {
+                liveActivityIframe = findLiveActivityIframe();
+                // Send initial time when the activity is ready
+                if (liveActivityIframe && liveActivityIframe.contentWindow) {
+                    liveActivityIframe.contentWindow.postMessage({
+                        type: 'live-activity-update',
+                        timeLeft: timeLeft
+                    }, '*');
+                }
+            }
+        
+            // Check if the live activity's stop button was pressed
+            if (data && data.action === 'stop-timer') {
+                resetTimer();
+            }
 
             // Check if this is a request from the parent to execute a Gurapp action
             if (data && data.type === 'gurapp-action-request' && data.functionName) {
