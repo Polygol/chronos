@@ -755,12 +755,16 @@
                         timeLeft--;
                         updateDisplay();
                         
-                        // Push update to the Live Activity iframe
+                        // FIX: Look for the iframe on every tick to avoid race condition
+                        if (!liveActivityIframe) {
+                            liveActivityIframe = findLiveActivityIframe();
+                        }
+        
                         if (liveActivityIframe && liveActivityIframe.contentWindow) {
                             liveActivityIframe.contentWindow.postMessage({
                                 type: 'live-activity-update',
                                 timeLeft: timeLeft
-                            }, '*');
+                            }, '*'); // Sending to child, wildcard is okay here.
                         }
         
                         if (timeLeft <= 0) {
@@ -775,7 +779,7 @@
             }
             updateActionButtons();
         }
-
+        
         function updateActionButtons() {
             const isTimerAlarmPlaying = timerAlarmSound.currentTime > 0 && !timerAlarmSound.paused;
             if (timeLeft === 0 && isTimerAlarmPlaying){
@@ -808,6 +812,7 @@
             timerAlarmSound.currentTime = 0; 
             updateActionButtons();
             Gurasuraisu.liveActivity.stop('chronos-timer');
+            liveActivityIframe = null; // Clear reference on reset
         }
         
         function playTimerAlarm() {
@@ -824,6 +829,10 @@
                     args: [] // Any arguments for that function (e.g., timer ID if multiple timers)
                 }
             });
+
+            // FIX: Explicitly stop the activity and clear the iframe reference
+            Gurasuraisu.liveActivity.stop('chronos-timer');
+            liveActivityIframe = null;
 
             // Native browser notification (optional, as Gurasuraisu's own handles it)
             if ("Notification" in window && Notification.permission === "granted") {
