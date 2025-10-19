@@ -734,34 +734,42 @@
                 clearInterval(timerId);
                 timerId = null;
                 startBtn.innerHTML = '<span class="material-symbols-rounded">play_arrow</span>';
-                Gurasuraisu.liveActivity.stop('chronos-timer');
+                // Don't stop the activity, just update its state
             } else {
                 if (timeLeft > 0) {
-                    Gurasuraisu.liveActivity.start({
-                        activityId: 'chronos-timer',
-                        url: '/chronos/liveactivities/timer-live-activity.html', 
-                        homescreen: true,
-                        height: '100px'
-                    });
-        
+                    if (!Gurasuraisu.liveActivity.isActive('chronos-timer')) { // (Helper function needed in API) - let's just start it
+                         Gurasuraisu.liveActivity.start({
+                            activityId: 'chronos-timer',
+                            url: '/chronos/liveactivities/timer-live-activity.html', 
+                            homescreen: true,
+                            height: '100px'
+                        });
+                    }
                     timerId = setInterval(() => {
                         timeLeft--;
                         updateDisplay();
                         
-                        // FIX: Use the new, robust API to send updates.
-                        // The parent OS will handle forwarding this to the iframe.
-                        Gurasuraisu.liveActivity.update('chronos-timer', { timeLeft: timeLeft });
+                        // Send rich state update
+                        Gurasuraisu.liveActivity.update('chronos-timer', { 
+                            timeLeft: timeLeft,
+                            isRunning: true 
+                        });
         
                         if (timeLeft <= 0) {
                             clearInterval(timerId);
                             timerId = null;
                             startBtn.innerHTML = '<span class="material-symbols-rounded">play_arrow</span>';
-                            playTimerAlarm();
+                            playTimerAlarm(); // This will stop the activity
                         }
                     }, 1000);
                     startBtn.innerHTML = '<span class="material-symbols-rounded">pause</span>';
                 }
             }
+            // Update the live activity with the new running state
+            Gurasuraisu.liveActivity.update('chronos-timer', {
+                timeLeft: timeLeft,
+                isRunning: !!timerId // Convert timerId to boolean
+            });
             updateActionButtons();
         }
         
@@ -816,7 +824,6 @@
 
             // FIX: Explicitly stop the activity and clear the iframe reference
             Gurasuraisu.liveActivity.stop('chronos-timer');
-            liveActivityIframe = null;
 
             // Native browser notification (optional, as Gurasuraisu's own handles it)
             if ("Notification" in window && Notification.permission === "granted") {
@@ -1078,11 +1085,14 @@
             if (event.source !== window.parent) return;
             const data = event.data;
         
-            // Check if the live activity's stop button was pressed
+            // Check if the live activity's buttons was pressed
+            if (data && data.action === 'toggle-timer') {
+                toggleTimer();
+            }
             if (data && data.action === 'stop-timer') {
                 resetTimer();
             }
-
+            
             // Check if this is a request from the parent to execute a Gurapp action
             if (data && data.type === 'gurapp-action-request' && data.functionName) {
                 const func = window[data.functionName]; // Get the function by name
