@@ -67,6 +67,7 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            gap: 6px;
         }
 
         .time-display {
@@ -84,7 +85,13 @@
             font-family: 'Open Runde', sans-serif;
         }
 
-        .stop-btn {
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .control-btn {
             background-color: var(--search-background);
             border: 1px solid var(--glass-border);
             box-shadow: var(--sun-shadow);
@@ -98,7 +105,7 @@
             transition: transform 0.15s cubic-bezier(0.2, 0, 0.38, 0.9);
         }
 
-        .stop-btn:active {
+        .control-btn:active {
             transform: scale(0.92);
             filter: brightness(1.5);
         }
@@ -116,15 +123,22 @@
             <div id="timeDisplay" class="time-display">00:00</div>
             <div class="label">Timer</div>
         </div>
-        <button id="stopBtn" class="stop-btn">
-            <span class="material-symbols-rounded">stop</span>
-        </button>
+        <div class="controls">
+            <button id="toggleBtn" class="control-btn">
+                <span class="material-symbols-rounded">pause</span>
+            </button>
+            <button id="stopBtn" class="control-btn">
+                <span class="material-symbols-rounded">stop</span>
+            </button>
+        </div>
     </div>
-
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const timeDisplay = document.getElementById('timeDisplay');
             const stopBtn = document.getElementById('stopBtn');
+            const toggleBtn = document.getElementById('toggleBtn'); 
+            const toggleIcon = toggleBtn.querySelector('.material-symbols-rounded'); 
 
             function formatTime(seconds) {
                 const mins = Math.floor(seconds / 60);
@@ -132,36 +146,41 @@
                 return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
             }
 
-            function updateUI(timeLeft) {
+            function updateUI(data) {
                 if (timeDisplay) {
-                    timeDisplay.textContent = formatTime(timeLeft);
+                    timeDisplay.textContent = formatTime(data.timeLeft);
+                }
+                if (toggleIcon) {
+                    toggleIcon.textContent = data.isRunning ? 'pause' : 'play_arrow';
                 }
                 
-                // Push the summary update to the parent for the homescreen widget
                 Gurasuraisu.liveActivity.pushHomescreenUpdate({
                     icon: 'hourglass_empty',
-                    text: formatTime(timeLeft)
+                    text: formatTime(data.timeLeft)
                 });
             }
             
             // Listen for update messages from the main Chronos app
             window.addEventListener('message', (event) => {
-                // Security: Only accept messages from the parent window
                 if (event.source !== window.parent) return;
-
                 const data = event.data;
-                if (data && data.type === 'live-activity-update' && data.timeLeft !== undefined) {
-                    updateUI(data.timeLeft);
+                if (data && data.type === 'live-activity-update') {
+                    updateUI(data); // Pass the whole data object
                 }
             });
 
-            // Handle the stop button click
-            stopBtn.addEventListener('click', () => {
-                // Send a message back to the main Chronos app to stop the timer
+            toggleBtn.addEventListener('click', () => {
                 window.parent.postMessage({
-                    targetApp: 'Chronos', // Polygol router will direct this
+                    targetApp: 'Chronos',
+                    action: 'toggle-timer'
+                }, '*');
+            });
+
+            stopBtn.addEventListener('click', () => {
+                window.parent.postMessage({
+                    targetApp: 'Chronos',
                     action: 'stop-timer'
-                }, '*'); // Using wildcard as origin can vary, parent handles security
+                }, '*');
             });
 
             // Let the main app know this activity is ready to receive updates
