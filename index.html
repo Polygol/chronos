@@ -719,7 +719,8 @@
             updateActionButtons();
 
             // Send notification via Gurasuraisu API with a button that calls a Gurapp function
-            Gurasuraisu.showNotification("Timer", {
+            Gurasuraisu.showNotification("Timer finished", {
+                heading: 'Timer',
                 icon: "hourglass", // Use a Material Symbols icon
                 buttonText: "Dismiss",
                 gurappAction: {
@@ -731,14 +732,6 @@
 
             // FIX: Explicitly stop the activity and clear the iframe reference
             Gurasuraisu.liveActivity.stop('chronos-timer');
-
-            // Native browser notification (optional, as Gurasuraisu's own handles it)
-            if ("Notification" in window && Notification.permission === "granted") {
-                new Notification("⏰ Timer Finished", {
-                    body: "Your timer has finished!",
-                    icon: "favicon.png"
-                });
-            }
         }
 
         display.addEventListener('click', () => {
@@ -819,11 +812,10 @@
            // Do NOT call stopAlarm() here directly, as the user needs to dismiss it.
            
            setTimeout(stopAlarm, 60000); // Auto-stop after 1 minute if not dismissed
-
-           document.title = "⏰ Alarm";
            
            // Send notification via Gurasuraisu API with a button that calls a Gurapp function
-           Gurasuraisu.showNotification(`Alarm • ${alarmTime}`, {
+           Gurasuraisu.showNotification(`${alarmTime}`, {
+               heading: 'Alarm',
                icon: "alarm", // Material Symbols icon for active alarm
                buttonText: "Dismiss",
                gurappAction: {
@@ -832,14 +824,6 @@
                    args: [] 
                }
            });
-            
-           // Native browser notification (optional, as Gurasuraisu's own handles it)
-           if ("Notification" in window && Notification.permission === "granted") {
-               new Notification("⏰ Alarm", {
-                   body: alarmTime,
-                   icon: "favicon.png" // Path to Chronos favicon
-               });
-           }
         }
                       
         function stopAlarm() {
