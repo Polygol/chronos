@@ -80,8 +80,8 @@
         
         .label {
             font-size: 0.9rem;
-            opacity: 0.7;
-            font-family: 'Open Runde', sans-serif;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
         }
 
         .controls {
@@ -103,12 +103,7 @@
             cursor: pointer;
             transition: transform 0.15s cubic-bezier(0.2, 0, 0.38, 0.9);
         }
-
-        .control-btn:active {
-            transform: scale(0.92);
-            filter: brightness(1.5);
-        }
-
+        
         .material-symbols-rounded {
             font-size: 28px;
             color: var(--text-color);
@@ -119,8 +114,8 @@
 
     <div class="activity-container">
         <div class="info">
-            <div id="timeDisplay" class="time-display">00:00</div>
             <div class="label">Timer</div>
+            <div id="timeDisplay" class="time-display">00:00</div>
         </div>
         <div class="controls">
             <button id="toggleBtn" class="control-btn">
