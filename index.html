@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,700,1,0" />
     <script src="https://momentjs.com/downloads/moment.min.js"></script>
     <script src="https://momentjs.com/downloads/moment-timezone-with-data.min.js"></script>
-    <script src="/assets/gurapp/api/gurasuraisu-api.js" defer></script>
+    <script src="./assets/gurapp/api/gurasuraisu-api.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         * {
@@ -519,7 +519,7 @@
                     if (!Gurasuraisu.liveActivity.isActive('chronos-timer')) { // (Helper function needed in API) - let's just start it
                          Gurasuraisu.liveActivity.start({
                             activityId: 'chronos-timer',
-                            url: '/chronos/liveactivities/timer-live-activity.html', 
+                            url: './chronos/liveactivities/timer-live-activity.html', 
                             homescreen: true,
                             height: '60px'
                         });
