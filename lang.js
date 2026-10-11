@@ -1,4 +1,5 @@
 const LANG_EN_CHRONOS = {
+    TITLE: "Chronos",
     ALARM: "Alarm",
     TIMER: "Timer",
     STOPWATCH: "Stopwatch",
@@ -6,6 +7,7 @@ const LANG_EN_CHRONOS = {
     ADD_ALARM: "Add Alarm",
     START: "Start",
     STOP: "Stop",
+    PAUSE: "Pause",
     LAP: "Lap",
     RESET: "Reset",
     ADD_CLOCK: "Add Clock",
@@ -18,6 +20,7 @@ const LANG_EN_CHRONOS = {
 };
 
 const LANG_JP_CHRONOS = {
+    TITLE: "Chronos",
     ALARM: "アラーム",
     TIMER: "タイマー",
     STOPWATCH: "ストップウォッチ",
@@ -25,6 +28,7 @@ const LANG_JP_CHRONOS = {
     ADD_ALARM: "アラームを追加",
     START: "開始",
     STOP: "停止",
+    PAUSE: "一時停止",
     LAP: "ラップ",
     RESET: "リセット",
     ADD_CLOCK: "時計を追加",
@@ -36,45 +40,8 @@ const LANG_JP_CHRONOS = {
     ALARM_NOTIFICATION_TITLE: "アラーム • {time}"
 };
 
-const LANG_DE_CHRONOS = {
-    ALARM: "Alarm",
-    TIMER: "Timer",
-    STOPWATCH: "Stoppuhr",
-    WORLDS: "Weltzeituhr",
-    ADD_ALARM: "Alarm hinzufügen",
-    START: "Start",
-    STOP: "Stopp",
-    LAP: "Runde",
-    RESET: "Zurücksetzen",
-    ADD_CLOCK: "Uhr hinzufügen",
-    DISMISS_TIMER: "Schließen",
-    DISMISS_ALARM: "Schließen",
-    TIMER_FINISHED_TITLE: "Timer",
-    TIMER_FINISHED_BODY: "Ihr Timer ist abgelaufen!",
-    ALARM_TITLE: "Alarm",
-    ALARM_NOTIFICATION_TITLE: "Alarm • {time}"
-};
-
-const LANG_ES_CHRONOS = {
-    ALARM: "Alarma",
-    TIMER: "Temporizador",
-    STOPWATCH: "Cronómetro",
-    WORLDS: "Reloj Mundial",
-    ADD_ALARM: "Añadir Alarma",
-    START: "Iniciar",
-    STOP: "Detener",
-    LAP: "Vuelta",
-    RESET: "Reiniciar",
-    ADD_CLOCK: "Añadir Reloj",
-    DISMISS_TIMER: "Descartar",
-    DISMISS_ALARM: "Descartar",
-    TIMER_FINISHED_TITLE: "Temporizador",
-    TIMER_FINISHED_BODY: "¡Tu temporizador ha terminado!",
-    ALARM_TITLE: "Alarma",
-    ALARM_NOTIFICATION_TITLE: "Alarma • {time}"
-};
-
 const LANG_KO_CHRONOS = {
+    TITLE: "Chronos",
     ALARM: "알람",
     TIMER: "타이머",
     STOPWATCH: "스톱워치",
@@ -82,6 +49,7 @@ const LANG_KO_CHRONOS = {
     ADD_ALARM: "알람 추가",
     START: "시작",
     STOP: "정지",
+    PAUSE: "일시정지",
     LAP: "랩",
     RESET: "초기화",
     ADD_CLOCK: "시계 추가",
@@ -94,6 +62,7 @@ const LANG_KO_CHRONOS = {
 };
 
 const LANG_ZH_CHRONOS = {
+    TITLE: "Chronos",
     ALARM: "闹钟",
     TIMER: "计时器",
     STOPWATCH: "秒表",
@@ -101,6 +70,7 @@ const LANG_ZH_CHRONOS = {
     ADD_ALARM: "添加闹钟",
     START: "开始",
     STOP: "停止",
+    PAUSE: "暂停",
     LAP: "计次",
     RESET: "重置",
     ADD_CLOCK: "添加时钟",
