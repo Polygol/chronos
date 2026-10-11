@@ -6,6 +6,9 @@
     <title data-lang-key="TITLE">Chronos</title>
     <script src="lang.js"></script>
     <script>
+        const bcpMap = { EN: 'en-US', JP: 'ja-JP', KO: 'ko-KR', ZH: 'zh-CN' };
+        window.bcpMap = bcpMap;
+
         function onLanguageChanged(lang) {
             if (typeof renderAlarms === 'function') renderAlarms();
             if (typeof renderWorldClocks === 'function') renderWorldClocks();
@@ -878,7 +881,7 @@
                <div class="clock-item">
                    <div>
                        <div>${clock.timezone}</div>
-                       <div>${moment().tz(clock.timezone).format('HH:mm:ss')}</div>
+                       <div>${moment().tz(clock.timezone).format('h:mm:ss')}</div>
                    </div>
                    <button class="clear-action-btn" onclick="deleteClock(${clock.id})">
                        <span class="material-symbols-rounded">cancel</span>
