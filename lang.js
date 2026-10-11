@@ -1,4 +1,5 @@
-const LANG_EN_CHRONOS = {
+// Polygol Chronos Language Dictionary
+window.LANG_EN_CHRONOS = {
     TITLE: "Chronos",
     ALARM: "Alarm",
     TIMER: "Timer",
@@ -19,7 +20,7 @@ const LANG_EN_CHRONOS = {
     ALARM_NOTIFICATION_TITLE: "Alarm • {time}"
 };
 
-const LANG_JP_CHRONOS = {
+window.LANG_JP_CHRONOS = {
     TITLE: "Chronos",
     ALARM: "アラーム",
     TIMER: "タイマー",
@@ -40,7 +41,7 @@ const LANG_JP_CHRONOS = {
     ALARM_NOTIFICATION_TITLE: "アラーム • {time}"
 };
 
-const LANG_KO_CHRONOS = {
+window.LANG_KO_CHRONOS = {
     TITLE: "Chronos",
     ALARM: "알람",
     TIMER: "타이머",
@@ -61,7 +62,7 @@ const LANG_KO_CHRONOS = {
     ALARM_NOTIFICATION_TITLE: "알람 • {time}"
 };
 
-const LANG_ZH_CHRONOS = {
+window.LANG_ZH_CHRONOS = {
     TITLE: "Chronos",
     ALARM: "闹钟",
     TIMER: "计时器",
@@ -77,7 +78,12 @@ const LANG_ZH_CHRONOS = {
     DISMISS_TIMER: "关闭",
     DISMISS_ALARM: "关闭",
     TIMER_FINISHED_TITLE: "计时器",
-    TIMER_FINISHED_BODY: "您的计时器已结束！",
+    TIMER_FINISHED_BODY: "计时结束！",
     ALARM_TITLE: "闹钟",
     ALARM_NOTIFICATION_TITLE: "闹钟 • {time}"
 };
+
+var LANG_EN_CHRONOS = window.LANG_EN_CHRONOS;
+var LANG_JP_CHRONOS = window.LANG_JP_CHRONOS;
+var LANG_KO_CHRONOS = window.LANG_KO_CHRONOS;
+var LANG_ZH_CHRONOS = window.LANG_ZH_CHRONOS;

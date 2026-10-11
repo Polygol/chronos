@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title data-lang-key="TITLE">Chronos</title>
-    <script src="lang.js">
+    <script src="lang.js"></script>
+    <script>
+        function onLanguageChanged(lang) {
+            if (typeof renderAlarms === 'function') renderAlarms();
+            if (typeof renderWorldClocks === 'function') renderWorldClocks();
+        }
+
         // --- Internationalization (i18n) Support ---
         function getAppLanguage() {
             let l = (localStorage.getItem('language') || localStorage.getItem('selectedLanguage') || 'EN').toUpperCase();
@@ -56,9 +62,13 @@
             }
         });
 
-        window.addEventListener('DOMContentLoaded', () => applyLanguage());
-        
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'language' || e.key === 'selectedLanguage') {
+                applyLanguage(e.newValue);
+            }
+        });
 
+        window.addEventListener('DOMContentLoaded', () => applyLanguage());
     </script>
     <link rel="icon" href="favicon.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -741,7 +751,7 @@
            Polygol.showNotification(`${alarmTime}`, {
                heading: t("ALARM_TITLE"),
                icon: "alarm", // Material Symbols icon for active alarm
-               buttonText: "Dismiss",
+               buttonText: t("DISMISS_ALARM"),
                polygolappAction: {
                    appName: document.body.dataset.appName, // "Chronos"
                    functionName: "dismissAlarmNotification", // Function to call in this Polygolapp
